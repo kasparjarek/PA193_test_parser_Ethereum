@@ -32,5 +32,8 @@ if (CMAKE_VERSION VERSION_LESS 2.8.11)
 	include_directories("${gtest_SOURCE_DIR}/include")
 endif()
 
-add_subdirectory(test)
-add_subdirectory(src)
+include_directories(${CMAKE_SOURCE_DIR}/src/)
+
+file(GLOB TEST_SRCS test/*.cpp)
+add_executable(test_parser ${TEST_SRCS})
+target_link_libraries(test_parser gtest)
