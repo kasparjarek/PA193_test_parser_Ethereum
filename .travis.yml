@@ -15,4 +15,4 @@ before_script:
   - make
 
 script:
-  - ./test/test_parser
+  - ./test_parser
