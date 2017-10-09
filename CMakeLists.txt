@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.2)
+cmake_minimum_required(VERSION 3.9.0)
 project(PA193_test_parser_Ethereum)
 
 # Download and unpack googletest at configure time
@@ -32,8 +32,30 @@ if (CMAKE_VERSION VERSION_LESS 2.8.11)
 	include_directories("${gtest_SOURCE_DIR}/include")
 endif()
 
+
+# Project settings
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 include_directories(${CMAKE_SOURCE_DIR}/src/)
 
-file(GLOB TEST_SRCS test/*.cpp)
-add_executable(test_parser ${TEST_SRCS})
-target_link_libraries(test_parser gtest)
+set(SRCS
+	${CMAKE_SOURCE_DIR}/src/block.cpp
+	${CMAKE_SOURCE_DIR}/src/rlp.cpp
+)
+
+set(TEST_SRCS
+	${SRCS}
+	${CMAKE_SOURCE_DIR}/test/main.cpp
+	${CMAKE_SOURCE_DIR}/test/block.cpp
+	${CMAKE_SOURCE_DIR}/test/rlp.cpp
+)
+
+set(MAIN ${CMAKE_SOURCE_DIR}/src/main.cpp)
+
+add_executable(ethereum_parser ${MAIN} ${SRCS})
+
+add_executable(test_parser ${TEST_SRCS} ${SRCS})
+target_link_libraries(test_parser gtest) 
