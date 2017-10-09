@@ -7,7 +7,7 @@
 class BadFormat : public std::exception
 {
 public:
-	virtual const char* what() const throw()
+	virtual const char* what() const
 	{
 		return "Bad RLP format";
 	}
@@ -15,19 +15,23 @@ public:
 
 class RLP
 {
+	unsigned char* _prefix;
 	unsigned char* _data;
+	size_t _totalLength;
 	size_t _dataLength;
 	std::vector<RLP> _items;
 
 public:
 
-	RLP(unsigned char* data, size_t maxLength)
-		: _data{data}, _dataLength{maxLength}
+	RLP(unsigned char* byteArray, size_t maxLength)
+		: _prefix{byteArray}, _totalLength{maxLength}
 	{
 		throw BadFormat();
 	}
 
-	size_t length() const { return 0; }
+	size_t totalLength() const { return _totalLength; }
+
+	size_t dataLength() const { return _dataLength; }
 
 	const RLP & operator[](unsigned int index) const;
 
