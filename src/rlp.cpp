@@ -4,7 +4,7 @@
 
 using namespace std;
 
-RLP::RLP(vector<uint8_t> & contents, size_t maxLength)
+RLP::RLP(const vector<uint8_t> & contents, size_t maxLength)
 	: _contents{contents}
 {
 	throw BadRLPFormat();

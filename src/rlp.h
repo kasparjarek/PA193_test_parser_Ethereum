@@ -16,7 +16,7 @@ public:
 
 class RLP
 {
-	std::vector<std::uint8_t> & _contents;
+	const std::vector<std::uint8_t> & _contents;
 	std::size_t _prefixOff;
 	std::size_t _dataOff;
 	std::size_t _totalLen;
@@ -25,7 +25,7 @@ class RLP
 
 public:
 
-	RLP(std::vector<std::uint8_t> & contents, std::size_t maxLength);
+	RLP(const std::vector<std::uint8_t> & contents, std::size_t maxLength);
 
 	std::size_t totalLength() const { return _totalLen; }
 

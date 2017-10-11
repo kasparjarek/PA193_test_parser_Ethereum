@@ -10,16 +10,16 @@ class RLPTest : public ::testing::Test
 {
 protected:
 	vector<uint8_t> _contents;
-	size_t _maxSize;
+	size_t _maxLength;
 
 	RLPTest()
 	{
 		ifstream file("../test/samples/1000000");
 		file.seekg(0, ios_base::end);
-		_maxSize = file.tellg();
-		_contents.resize(_maxSize);
+		_maxLength = file.tellg();
+		_contents.resize(_maxLength);
 		file.seekg(0, ios_base::beg);
-		file.read((char *) &(_contents[0]), _maxSize);
+		file.read((char *) &(_contents[0]), _maxLength);
 	}
 };
 
@@ -27,7 +27,7 @@ protected:
 TEST_F(RLPTest, BadBlockFile)
 {
 	try {
-		RLP(_contents, _maxSize - 1);
+		RLP(_contents, _maxLength - 1);
 		FAIL() << "Expected BadRLPFormat exception";
 
 	} catch (BadRLPFormat const & err) {
@@ -52,7 +52,7 @@ TEST_F(RLPTest, BadBlockFile)
 
 TEST_F(RLPTest, FirstLevelParseTest)
 {
-	RLP rlp{_contents, _maxSize};
+	RLP rlp{_contents, _maxLength};
 	EXPECT_EQ(0xF9, rlp.data()[0]);
 	EXPECT_EQ(0xF9, rlp.prefix()[0]);
 	EXPECT_EQ(768u, rlp.totalLength());
@@ -61,7 +61,7 @@ TEST_F(RLPTest, FirstLevelParseTest)
 
 TEST_F(RLPTest, SecondLevelParseTest)
 {
-	RLP rlp{_contents, _maxSize};
+	RLP rlp{_contents, _maxLength};
 	ASSERT_EQ(3u, rlp.numItems());
 	// TODO: change indices to enum (ETH_HEADER, ETH_TXS, etc.)
 	EXPECT_EQ(0xF9, rlp[0].prefix()[0]);
