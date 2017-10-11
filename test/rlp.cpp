@@ -1,71 +1,82 @@
 #include "gtest/gtest.h"
 #include "rlp.h"
 
-#include <boost/interprocess/file_mapping.hpp>
-#include <boost/interprocess/mapped_region.hpp>
+#include <fstream>
+#include <vector>
 
 using namespace std;
-using namespace boost::interprocess;
 
 class RLPTest : public ::testing::Test
 {
 protected:
+	vector<uint8_t> _contents;
+	size_t _maxSize;
+
 	RLPTest()
 	{
-		const char* filename = "../test/samples/1000000";
-		file_mapping m_file(filename, read_only);
-		mapped_region f(m_file,read_only);
-
-		data_ = (uint8_t *) f.get_address();
-		maxLength_ = f.get_size();
+		ifstream file("../test/samples/1000000");
+		file.seekg(0, ios_base::end);
+		_maxSize = file.tellg();
+		_contents.resize(_maxSize);
+		file.seekg(0, ios_base::beg);
+		file.read((char *) &(_contents[0]), _maxSize);
 	}
-	
-	uint8_t* data_;
-	size_t maxLength_;
 };
 
 
-TEST_F(RLPTest, ConstructorNotEnoughData)
+TEST_F(RLPTest, BadBlockFile)
 {
 	try {
-		RLP(data_, maxLength_ - 1);
+		RLP(_contents, _maxSize - 1);
 		FAIL() << "Expected BadRLPFormat exception";
 
-	} catch(BadRLPFormat const & err) {
+	} catch (BadRLPFormat const & err) {
 		EXPECT_STREQ(err.what(), "Bad RLP format");
 
-	} catch(...) {
+	} catch (...) {
 		FAIL() << "Expected BadRLPFormat exception";
 	}
+
+
+	/*try {
+		RLP();
+		FAIL() << "Expected BadRLPFormat exception";
+
+	} catch (BadRLPFormat const & err) {
+		EXPECT_STREQ(err.what(), "Bad RLP format");
+
+	} catch (...) {
+		FAIL() << "Expected BadRLPFormat exception";
+	}*/
 }
 
 TEST_F(RLPTest, FirstLevelParseTest)
 {
-	RLP block(data_, maxLength_);
-	EXPECT_EQ(0xF9, block.data()[0]);
-	EXPECT_EQ(0xF9, block.prefix()[0]);
-	EXPECT_EQ(768, block.totalLength());
-	EXPECT_EQ(765, block.dataLength());
+	RLP rlp{_contents, _maxSize};
+	EXPECT_EQ(0xF9, rlp.data()[0]);
+	EXPECT_EQ(0xF9, rlp.prefix()[0]);
+	EXPECT_EQ(768u, rlp.totalLength());
+	EXPECT_EQ(765u, rlp.dataLength());
 }
 
 TEST_F(RLPTest, SecondLevelParseTest)
 {
-	RLP block(data_, maxLength_);
-	ASSERT_EQ(3, block.numItems());
+	RLP rlp{_contents, _maxSize};
+	ASSERT_EQ(3u, rlp.numItems());
 	// TODO: change indices to enum (ETH_HEADER, ETH_TXS, etc.)
-	EXPECT_EQ(0xF9, block[0].prefix()[0]);
-	EXPECT_EQ(0xA0, block[0].data()[0]);
-	EXPECT_EQ(538, block[0].totalLength());
-	EXPECT_EQ(535, block[0].dataLength());
+	EXPECT_EQ(0xF9, rlp[0].prefix()[0]);
+	EXPECT_EQ(0xA0, rlp[0].data()[0]);
+	EXPECT_EQ(538u, rlp[0].totalLength());
+	EXPECT_EQ(535u, rlp[0].dataLength());
 
-	EXPECT_EQ(0xF8, block[1].prefix()[0]);
-	EXPECT_EQ(0xF8, block[1].data()[0]);
-	EXPECT_EQ(226, block[1].totalLength());
-	EXPECT_EQ(224, block[1].dataLength());
+	EXPECT_EQ(0xF8, rlp[1].prefix()[0]);
+	EXPECT_EQ(0xF8, rlp[1].data()[0]);
+	EXPECT_EQ(226u, rlp[1].totalLength());
+	EXPECT_EQ(224u, rlp[1].dataLength());
 
-	EXPECT_EQ(0xc0, block[2].prefix()[0]);
-	//EXPECT_EQ(0xA0, block[0].data()[0]);
-	EXPECT_EQ(1, block[2].totalLength());
-	EXPECT_EQ(0, block[2].dataLength());
+	EXPECT_EQ(0xc0, rlp[2].prefix()[0]);
+	//EXPECT_EQ(0xA0, rlp[0].data()[0]);
+	EXPECT_EQ(1u, rlp[2].totalLength());
+	EXPECT_EQ(0u, rlp[2].dataLength());
 }
 

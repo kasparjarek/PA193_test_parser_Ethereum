@@ -4,8 +4,8 @@
 
 using namespace std;
 
-RLP::RLP(uint8_t* byteArray, size_t maxLength)
-	: _prefix{byteArray}, _totalLength{maxLength}
+RLP::RLP(vector<uint8_t> & contents, size_t maxLength)
+	: _contents{contents}
 {
 	throw BadRLPFormat();
 }
