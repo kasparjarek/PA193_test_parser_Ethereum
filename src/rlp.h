@@ -5,14 +5,6 @@
 #include <exception>
 #include <vector>
 
-class BadRLPFormat : public std::exception
-{
-public:
-	virtual const char* what() const noexcept
-	{
-		return "Bad RLP format";
-	}
-};
 
 class RLP
 {
@@ -24,20 +16,40 @@ class RLP
 	std::vector<RLP> _items;
 
 public:
-
-	RLP(const std::vector<std::uint8_t> & contents, std::size_t maxLength);
+	RLP(const std::vector<std::uint8_t> & contents);
 
 	std::size_t totalLength() const { return _totalLen; }
 
 	std::size_t dataLength() const { return _dataLen; }
 
-	const RLP & operator[](unsigned int index) const { return _items[index]; }
+	const RLP & operator[](unsigned int index) const
+	{ return _items[index]; }
 
-	unsigned int numItems() const { return 0; }
+	const RLP & at(unsigned int index) const { return _items.at(index); }
 
-	const std::uint8_t* data() const { return &(_contents[_dataOff]); }
+	unsigned int numItems() const { return _items.size(); }
 
-	const std::uint8_t* prefix() const { return &(_contents[_prefixOff]); }
+	std::size_t dataOffset() const { return _dataOff; }
+
+	std::size_t prefixOffset() const { return _prefixOff; }
+
+private:
+	RLP(const std::vector<std::uint8_t> & contents, std::size_t offset, 
+		std::size_t maxLength);
+
+	void parseDataLength(std::size_t dataLengthSize);
+
+	void parseItems();
+};
+
+
+class BadRLPFormat : public std::exception
+{
+public:
+	virtual const char* what() const noexcept
+	{
+		return "Bad RLP format";
+	}
 };
 
 #endif
