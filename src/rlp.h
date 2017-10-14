@@ -18,6 +18,9 @@ class RLP
 public:
 	RLP(const std::vector<std::uint8_t> & contents);
 
+	RLP(const std::vector<std::uint8_t> & contents, std::size_t offset, 
+	    std::size_t maxLength);
+
 	std::size_t totalLength() const { return _totalLen; }
 
 	std::size_t dataLength() const { return _dataLen; }
@@ -34,9 +37,6 @@ public:
 	std::size_t prefixOffset() const { return _prefixOff; }
 
 private:
-	RLP(const std::vector<std::uint8_t> & contents, std::size_t offset, 
-		std::size_t maxLength);
-
 	void parseDataLength(std::size_t dataLengthSize);
 
 	void parseItems();

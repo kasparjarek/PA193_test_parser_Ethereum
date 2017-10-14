@@ -3,47 +3,70 @@
 
 #include "rlp.h"
 
-#include <array>
 #include <cstdint>
 #include <vector>
 
-class Header;
-class Transaction;
-
-class Block
-{
-	RLP _rlp;
-
-public:
-	Block(std::uint8_t* data);
-
-	const Header & header() const;
-
-	const vector<Transaction> & transactions() const;
-
-	const vector<Header> & ommers() const;
-};
-
+class EthereumParser;
 
 class Header
 {
+	enum order {
+		PARENT_HASH, OMMERS_HASH, BENEFICIARY, STATE_ROOT,
+		TRANSACTIONS_ROOT, RECEIPTS_ROOT, LOGS_BLOOM, DIFFICULTY,
+		NUMBER, GAS_LIMIT, GAS_USED, TIMESTAMP, EXTRA_DATA, MIX_HASH,
+		NONCE
+	};
+	friend class EthereumParser;
+
+	std::vector<std::uint8_t> _parentHash;
+	std::vector<std::uint8_t> _ommersHash;
+	std::vector<std::uint8_t> _beneficiary;
+	std::vector<std::uint8_t> _stateRoot;
+	std::vector<std::uint8_t> _transactionsRoot;
+	std::vector<std::uint8_t> _receiptsRoot;
+	std::vector<std::uint8_t> _logsBloom;
+	std::size_t _difficulty;
+	std::size_t _number;
+	std::size_t _gasLimit;
+	std::size_t _gasUsed;
+	std::size_t _timestamp;
+	std::vector<std::uint8_t> _extraData;
+	std::vector<std::uint8_t> _mixHash;
+	std::vector<std::uint8_t> _nonce;
 
 public:
-	const std::array<std::uint8_t, 32> & parentHash() const;
-	const std::array<std::uint8_t, 32> & ommersHash() const;
-	const std::array<std::uint8_t, 20> & beneficiary() const;
-	const std::array<std::uint8_t, 32> & stateRoot() const;
-	const std::array<std::uint8_t, 32> & transactionsRoot() const;
-	const std::array<std::uint8_t, 32> & receiptsRoot() const;
-	const std::array<std::uint8_t, 256> & logsBloom() const;
-	std::size_t difficulty() const;
-	std::size_t number() const;
-	std::size_t gasLimit() const;
-	std::size_t gasUsed() const;
-	std::size_t timestamp() const; // maybe pass as a vector, max value is 2^256
-	const std::vector<std::uint8_t> & extraData() const;
-	const std::array<std::uint8_t, 32> & mixHash() const;
-	const std::array<std::uint8_t, 8> & nonce() const;
+	Header() {}; 
+
+	const std::vector<std::uint8_t> & parentHash() const
+	{ return _parentHash; }
+	const std::vector<std::uint8_t> & ommersHash() const
+	{ return _ommersHash; }
+	const std::vector<std::uint8_t> & beneficiary() const
+	{ return _beneficiary; }
+	const std::vector<std::uint8_t> & stateRoot() const
+	{ return _stateRoot; }
+	const std::vector<std::uint8_t> & transactionsRoot() const
+	{ return _transactionsRoot; }
+	const std::vector<std::uint8_t> & receiptsRoot() const
+	{ return _receiptsRoot; }
+	const std::vector<std::uint8_t> & logsBloom() const
+	{ return _logsBloom; }
+	std::size_t difficulty() const
+	{ return _difficulty; }
+	std::size_t number() const
+	{ return _number; }
+	std::size_t gasLimit() const
+	{ return _gasLimit; }
+	std::size_t gasUsed() const
+	{ return _gasUsed; }
+	std::size_t timestamp() const // maybe pass as a vector, max value is 2^256
+	{ return _timestamp; }
+	const std::vector<std::uint8_t> & extraData() const
+	{ return _extraData; }
+	const std::vector<std::uint8_t> & mixHash() const
+	{ return _mixHash; }
+	const std::vector<std::uint8_t> & nonce() const
+	{ return _nonce; }
 };
 
 
@@ -53,7 +76,7 @@ public:
 	std::size_t nonce() const;
 	std::size_t gasPrice() const;
 	std::size_t gasLimit() const;
-	const std::vector<std::uint8_t, 20> & to() const;
+	const std::vector<std::uint8_t> & to() const;
 	std::size_t value() const;
 	unsigned int v() const;
 	std::size_t r() const;
@@ -63,5 +86,31 @@ public:
 
 
 };
+
+class Block
+{
+	enum order { HEADER, TRANSACTIONS, OMMERS };
+	friend class EthereumParser;
+
+	Header _header;
+	std::vector<Transaction> _transactions;
+	std::vector<Header> _ommers;
+
+public:
+	Block(Header header, std::vector<Transaction> transactions,
+			std::vector<Header> ommers)
+		: _header{header}, _transactions{transactions}, _ommers{ommers}
+	{}
+
+	const Header & header() const
+	{ return _header; }
+
+	const std::vector<Transaction> & transactions() const
+	{ return _transactions; }
+
+	const std::vector<Header> & ommers() const
+	{ return _ommers; }
+};
+
 
 #endif
