@@ -38,7 +38,16 @@ Block EthereumParser::parseBlock(size_t & offset) const
 
 	Header header = fillHeader(rlp[Block::HEADER]);
 
-	return Block{header, vector<Transaction>(), vector<Header>()};
+	vector<Transaction> transactions;
+	for (unsigned i = 0; i < rlp[Block::TRANSACTIONS].size(); ++i)
+		transactions.push_back(
+			fillTransaction(rlp[Block::TRANSACTIONS][i]));
+
+	vector<Header> ommers;
+	for (unsigned i = 0; i < rlp[Block::OMMERS].size(); ++i)
+		ommers.push_back(fillHeader(rlp[Block::OMMERS][i]));
+
+	return Block{header, transactions, ommers};
 }
 
 
@@ -63,6 +72,27 @@ Header EthereumParser::fillHeader(const RLP & rlp) const
 	fill(header._nonce, rlp[Header::NONCE]);
 
 	return header;
+}
+
+
+Transaction EthereumParser::fillTransaction(const RLP & rlp) const
+{
+	Transaction transaction;
+
+	fill(transaction._nonce, rlp[Transaction::NONCE]);
+	fill(transaction._gasPrice, rlp[Transaction::GAS_PRICE]);
+	fill(transaction._gasLimit, rlp[Transaction::GAS_LIMIT]);
+	fill(transaction._to, rlp[Transaction::TO]);
+	fill(transaction._value, rlp[Transaction::VALUE]);
+	fill(transaction._v, rlp[Transaction::V]);
+	fill(transaction._r, rlp[Transaction::R]);
+	fill(transaction._s, rlp[Transaction::S]);
+	if (transaction.to().size() == 0)
+		fill(transaction._init, rlp[Transaction::INIT]);
+	else
+		fill(transaction._data, rlp[Transaction::INIT]);
+
+	return transaction;
 }
 
 

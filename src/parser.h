@@ -22,6 +22,8 @@ private:
 
 	Header fillHeader(const RLP & rlp) const;
 
+	Transaction fillTransaction(const RLP & rlp) const;
+
 	void fill(std::vector<std::uint8_t> & dest, const RLP & rlp) const;
 
 	void fill(std::size_t & dest, const RLP & rlp) const;

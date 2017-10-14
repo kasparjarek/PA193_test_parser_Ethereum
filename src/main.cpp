@@ -25,5 +25,12 @@ int main()
 
 	cout << dec << b.header().difficulty() << endl;
 
+	for (unsigned i = 0; i < b.transactions().size(); ++i) {
+		for (auto x : b.transactions()[i].to())
+			cout << hex << (unsigned) x << " ";
+		cout << endl;
+	}
+
+	cout << dec << b.ommers().size() << endl;
 	return 0;
 }

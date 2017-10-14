@@ -72,18 +72,44 @@ public:
 
 class Transaction
 {
-public:
-	std::size_t nonce() const;
-	std::size_t gasPrice() const;
-	std::size_t gasLimit() const;
-	const std::vector<std::uint8_t> & to() const;
-	std::size_t value() const;
-	unsigned int v() const;
-	std::size_t r() const;
-	std::size_t s() const;
-	const std::vector<std::uint8_t> & init() const;
-	const std::vector<std::uint8_t> & data() const;
+	enum order {
+		NONCE, GAS_PRICE, GAS_LIMIT, TO, VALUE, V, R, S, INIT,
+		DATA = INIT
+	};
+	friend class EthereumParser;
 
+	std::size_t _nonce;
+	std::size_t _gasPrice;
+	std::size_t _gasLimit;
+	std::vector<std::uint8_t> _to;
+	std::size_t _value;
+	std::size_t _v;
+	std::size_t _r;
+	std::size_t _s;
+	std::vector<std::uint8_t> _init;
+	std::vector<std::uint8_t> _data;
+
+public:
+	std::size_t nonce() const
+	{ return _nonce; }
+	std::size_t gasPrice() const
+	{ return _gasPrice; }
+	std::size_t gasLimit() const
+	{ return _gasLimit; }
+	const std::vector<std::uint8_t> & to() const
+	{ return _to; }
+	std::size_t value() const
+	{ return _value; }
+	std::size_t v() const
+	{ return _v; }
+	std::size_t r() const
+	{ return _r; }
+	std::size_t s() const
+	{ return _s; }
+	const std::vector<std::uint8_t> & init() const
+	{ return _init; }
+	const std::vector<std::uint8_t> & data() const
+	{ return _data; }
 
 };
 
