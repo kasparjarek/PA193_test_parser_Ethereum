@@ -11,7 +11,14 @@ cmake ..
 make
 ```
 
-Structure of block 1000000:
+# Useful links
+[Ethereum yellow paper](http://yellowpaper.io)
+
+Merkle Patricia Trie
+* [Wiki](https://github.com/ethereum/wiki/wiki/Patricia-Tree)
+* [Blogpost - Understanding the ethereum trie](https://easythereentropy.wordpress.com/2014/06/04/understanding-the-ethereum-trie/)
+
+# Structure of block 1000000:
 
 ```
 f9 | 02fd |			Node, size: 765
