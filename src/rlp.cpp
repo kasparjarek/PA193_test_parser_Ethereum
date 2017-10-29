@@ -1,5 +1,6 @@
 #include "rlp.h"
 
+#include <cstring>
 #include <cstdint>
 
 using namespace std;
@@ -80,3 +81,68 @@ void RLP::parseItems()
 	}
 }
 
+vector<uint8_t> RLP::serialize(const vector<vector<uint8_t> > & data)
+{
+	vector<uint8_t> items;
+
+	for (auto d : data) {
+		if (d.size() == 0) {
+			items.push_back(128u);
+
+		} else if (d.size() == 1 && d[0] < 128u) {
+			items.push_back(d[0]);
+
+		} else if (d.size() < 56) {
+			items.push_back(128u + d.size());
+			size_t tmp = items.size();
+			items.resize(tmp + d.size());
+			memcpy(items.data() + tmp, d.data(), d.size());
+
+		} else {
+			vector<uint8_t> s;
+			size_t tmp = d.size();
+			while (tmp > 0) {
+				s.push_back(tmp % 256);
+				tmp /= 256;
+			}
+
+			items.push_back(183u + s.size());
+
+			while (!s.empty()) {
+				items.push_back(s.back());
+				s.pop_back();
+			}
+
+			tmp = items.size();
+			items.resize(tmp + d.size());
+			memcpy(items.data() + tmp, d.data(), d.size());
+
+		}
+	}
+
+	vector<uint8_t> prefix;
+	if (items.size() < 56) {
+		prefix.push_back(192u + items.size());
+	} else {
+		vector<uint8_t> s;
+		size_t tmp = items.size();
+		while (tmp > 0) {
+			s.push_back(tmp % 256);
+			tmp /= 256;
+		}
+
+		prefix.push_back(247u + s.size());
+
+		while (!s.empty()) {
+			prefix.push_back(s.back());
+			s.pop_back();
+		}
+	}
+
+	vector<uint8_t> result;
+	result.resize(prefix.size() + items.size());
+	memcpy(result.data(), prefix.data(), prefix.size());
+	memcpy(result.data() + prefix.size(), items.data(), items.size());
+
+	return result;
+}

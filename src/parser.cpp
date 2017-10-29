@@ -39,12 +39,12 @@ Block EthereumParser::parseBlock(size_t & offset) const
 	Header header = fillHeader(rlp[Block::HEADER]);
 
 	vector<Transaction> transactions;
-	for (unsigned i = 0; i < rlp[Block::TRANSACTIONS].size(); ++i)
+	for (unsigned i = 0; i < rlp[Block::TRANSACTIONS].numItems(); ++i)
 		transactions.push_back(
 			fillTransaction(rlp[Block::TRANSACTIONS][i]));
 
 	vector<Header> ommers;
-	for (unsigned i = 0; i < rlp[Block::OMMERS].size(); ++i)
+	for (unsigned i = 0; i < rlp[Block::OMMERS].numItems(); ++i)
 		ommers.push_back(fillHeader(rlp[Block::OMMERS][i]));
 
 	return Block{header, transactions, ommers};

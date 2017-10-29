@@ -30,13 +30,16 @@ public:
 
 	const RLP & at(unsigned int index) const { return _items.at(index); }
 
-	std::size_t size() const { return _items.size(); }
+//	std::size_t size() const { return _items.size(); }
 
 	unsigned int numItems() const { return _items.size(); }
 
 	std::size_t dataOffset() const { return _dataOff; }
 
 	std::size_t prefixOffset() const { return _prefixOff; }
+
+	static std::vector<std::uint8_t> serialize(
+		const std::vector<std::vector<std::uint8_t> > & data);
 
 private:
 	void parseDataLength(std::size_t dataLengthSize);
