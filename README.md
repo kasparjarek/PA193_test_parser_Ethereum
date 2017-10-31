@@ -29,11 +29,7 @@ Merkle Patricia Trie
 * (nonce a mixHash asi vynechame, je k nim potrebna cela databaza)
 
 4.3.2 Holistic Validity
-* sprovoznit nejaky Keccak
-* Hex-prefix encoding (Appendix C)
-* node composition function n (sucast merkle tree, appendix D)
-* structural composition funcion (sucast merkle tree, appendix D)
-* merkle tree - leaf, extension, branch nodes (appendix D)
+* merkle tree - do konce týdne commitnu (Jarek)
 * merkle tree pouzit na validaciu zoznamu transakcii (H_t)
 * (zoznam receiptov asi vynechame, potrebna databaza stavov)
 * (logsBloom asi vynechame, potrebny EVM)
