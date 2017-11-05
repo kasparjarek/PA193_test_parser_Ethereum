@@ -4,7 +4,9 @@
 #include "rlp.h"
 
 #include <cstdint>
+#include <exception>
 #include <vector>
+
 
 class EthereumParser;
 
@@ -138,5 +140,14 @@ public:
 	{ return _ommers; }
 };
 
+
+class BadBlockFormat : public std::exception
+{
+public:
+	virtual const char* what() const noexcept
+	{
+		return "Bad Block format";
+	}
+};
 
 #endif

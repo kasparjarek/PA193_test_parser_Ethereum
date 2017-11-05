@@ -55,6 +55,17 @@ Header EthereumParser::fillHeader(const RLP & rlp) const
 {
 	Header header;
 
+	if (rlp[Header::PARENT_HASH].dataLength() != 32
+			|| rlp[Header::OMMERS_HASH].dataLength() != 32 
+			|| rlp[Header::BENEFICIARY].dataLength() != 20
+			|| rlp[Header::STATE_ROOT].dataLength() != 32
+			|| rlp[Header::TRANSACTIONS_ROOT].dataLength() != 32
+			|| rlp[Header::RECEIPTS_ROOT].dataLength() != 32
+			|| rlp[Header::LOGS_BLOOM].dataLength() != 256
+			|| rlp[Header::MIX_HASH].dataLength() != 32
+			|| rlp[Header::NONCE].dataLength() != 8)
+		throw BadBlockFormat{};
+
 	fill(header._parentHash, rlp[Header::PARENT_HASH]);
 	fill(header._ommersHash, rlp[Header::OMMERS_HASH]);
 	fill(header._beneficiary, rlp[Header::BENEFICIARY]);
@@ -78,6 +89,10 @@ Header EthereumParser::fillHeader(const RLP & rlp) const
 Transaction EthereumParser::fillTransaction(const RLP & rlp) const
 {
 	Transaction transaction;
+
+	if (rlp[Transaction::TO].dataLength() != 0
+			&& rlp[Transaction::TO].dataLength() != 20)
+		throw BadBlockFormat();
 
 	fill(transaction._nonce, rlp[Transaction::NONCE]);
 	fill(transaction._gasPrice, rlp[Transaction::GAS_PRICE]);
