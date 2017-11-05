@@ -45,12 +45,14 @@ if (CMAKE_COMPILER_IS_GNUCC)
 	)
 endif (CMAKE_COMPILER_IS_GNUCC)
 
+
 include_directories(${CMAKE_SOURCE_DIR}/src/)
 
 set(SRCS
 	${CMAKE_SOURCE_DIR}/src/parser.cpp
 	${CMAKE_SOURCE_DIR}/src/block.cpp
 	${CMAKE_SOURCE_DIR}/src/rlp.cpp
+	${CMAKE_SOURCE_DIR}/src/validator.cpp
 )
 
 set(TEST_SRCS
