@@ -45,9 +45,6 @@ if (CMAKE_COMPILER_IS_GNUCC)
 	)
 endif (CMAKE_COMPILER_IS_GNUCC)
 
-# link cryptopp
-set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -lcryptopp" )
-
 include_directories(${CMAKE_SOURCE_DIR}/src/)
 
 set(SRCS
@@ -68,7 +65,9 @@ set(TEST_SRCS
 set(MAIN ${CMAKE_SOURCE_DIR}/src/main.cpp)
 
 add_executable(ethereum_parser ${MAIN} ${SRCS})
+target_link_libraries(ethereum_parser cryptopp)
 
 add_executable(test_parser ${TEST_SRCS} ${SRCS})
 target_link_libraries(test_parser gtest) 
+target_link_libraries(test_parser cryptopp)
 

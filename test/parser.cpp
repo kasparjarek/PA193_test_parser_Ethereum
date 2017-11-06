@@ -4,7 +4,7 @@
 
 using namespace std;
 
-class ParserTest : public ::testing::Test
+/*class ParserTest : public ::testing::Test
 {
 protected:
 	Block _block;
@@ -19,4 +19,4 @@ TEST_F(ParserTest, HeaderFields)
 {
 	
 
-}
+}*/
