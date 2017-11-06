@@ -2,6 +2,8 @@
 #include<tgmath.h>
 #include"validator.h"
 #include<iostream>
+#include"keccak.h"
+#include"rlp.h"
 
 using namespace std;
 
@@ -58,10 +60,30 @@ void validateAll(const Block& parent, Block& child) {
  * @return int
 */
 int validateParentHash(const Block& parent, const Block& child) {
-    vector<uint8_t> hash1; // place holder, will be replaced by hash of root node of previous node
-    Block tmp = parent; //because compiler argues about this parameter not being used
-    vector<uint8_t> hash2 = child.header().parentHash();
-    if (hash1 == hash2) {
+    /*now getting parts of Block header, creating a vector of RLPfield
+     * then serializing them through RLP.serialize and calculating their hash
+    */
+    Header header = parent.header();
+    RLPField parenthash = {header.parentHash(), false};
+    RLPField ommershash = {header.ommersHash(), false};
+    RLPField beneficiary = {header.beneficiary(), false};
+    RLPField stateroot = {header.stateRoot(), false};
+    RLPField transactionsroot = {header.transactionsRoot(), false};
+    RLPField receiptsroot = {header.receiptsRoot(), false};
+    RLPField logsbloom = {header.logsBloom(), false};
+    RLPField difficulty = {numberToVector(header.difficulty()), false};
+    RLPField number = {numberToVector(header.number()), false};
+    RLPField gaslimit = {numberToVector(header.gasLimit()), false};
+    RLPField gasused = {numberToVector(header.gasUsed()), false};
+    RLPField timestamp = {numberToVector(header.timestamp()), false};
+    RLPField extradata = {header.extraData(), false};
+    RLPField mixhash = {header.mixHash(), false};
+    RLPField nonce = {header.nonce(), false};
+    vector<RLPField> fields = {parenthash, ommershash, beneficiary, stateroot, transactionsroot, receiptsroot, logsbloom, difficulty, number, gaslimit, gasused, timestamp, extradata, mixhash, nonce};
+    vector<uint8_t> headerbytes = RLP::serialize(fields);
+    vector<uint8_t> parentheaderhash = keccak(headerbytes);
+    vector<uint8_t> childhash = child.header().parentHash();
+    if (parentheaderhash == childhash) {
             return 0;
     }
     else {
@@ -141,4 +163,18 @@ int validateLogsBloom(const Block& parent, const Block& child) {
     Block tmp1 = parent;
     Block tmp2 = child;
     return 0;
+}
+
+vector<uint8_t> numberToVector(size_t input) {
+    vector<uint8_t> result;
+    vector<uint8_t> tmp; //will be filled with bytes and later reversed into result vector
+    while (input > 0) {
+            tmp.push_back(input % 256);
+            input /= 256;
+    }
+    while (!tmp.empty()) {
+            result.push_back(tmp.back());
+            tmp.pop_back();
+    }
+    return result;
 }

@@ -14,5 +14,6 @@
     int validateMixHash(const Block& parent, const Block& child); //not implemented
     int validateReceipts(const Block& parent, const Block& child); //not implemented
     int validateLogsBloom(const Block& parent, const Block& child); //not implemented
+    std::vector<std::uint8_t> numberToVector(size_t input);
 
 #endif
