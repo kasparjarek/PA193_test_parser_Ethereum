@@ -22,7 +22,7 @@ int validateParentHash(const Block b1, const Block b2) {
 }
 
 int validateBlockNumber(const Block b1, const Block b2) {
-    if (b1.header().number() == b2.header().number()) {
+    if (b1.header().number() == (b2.header().number() - 1)) {
             return 0;
     }
     else {
