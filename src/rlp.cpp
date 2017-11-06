@@ -81,44 +81,55 @@ void RLP::parseItems()
 	}
 }
 
-vector<uint8_t> RLP::serialize(const vector<vector<uint8_t> > & data)
+vector<uint8_t> RLP::serialize(const vector<RLPField> & dataFields)
 {
 	vector<uint8_t> items;
 
-	for (auto d : data) {
-		if (d.size() == 0) {
-			items.push_back(128u);
+	for (auto f : dataFields) {
+		if (!f.isSerialized) {
+			if (f.bytes.size() == 0) {
+				items.push_back(128u);
 
-		} else if (d.size() == 1 && d[0] < 128u) {
-			items.push_back(d[0]);
+			} else if (f.bytes.size() == 1 && f.bytes[0] < 128u) {
+				items.push_back(f.bytes[0]);
 
-		} else if (d.size() < 56) {
-			items.push_back(128u + d.size());
-			size_t tmp = items.size();
-			items.resize(tmp + d.size());
-			memcpy(items.data() + tmp, d.data(), d.size());
+			} else if (f.bytes.size() < 56) {
+				items.push_back(128u + f.bytes.size());
+				size_t tmp = items.size();
+				items.resize(tmp + f.bytes.size());
+				memcpy(items.data() + tmp, f.bytes.data(), f.bytes.size());
+
+			} else {
+				vector<uint8_t> s;
+				size_t tmp = f.bytes.size();
+				while (tmp > 0) {
+					s.push_back(tmp % 256);
+					tmp /= 256;
+				}
+
+				items.push_back(183u + s.size());
+
+				while (!s.empty()) {
+					items.push_back(s.back());
+					s.pop_back();
+				}
+
+				tmp = items.size();
+				items.resize(tmp + f.bytes.size());
+				memcpy(items.data() + tmp, f.bytes.data(), f.bytes.size());
+
+			}
 
 		} else {
-			vector<uint8_t> s;
-			size_t tmp = d.size();
-			while (tmp > 0) {
-				s.push_back(tmp % 256);
-				tmp /= 256;
-			}
 
-			items.push_back(183u + s.size());
-
-			while (!s.empty()) {
-				items.push_back(s.back());
-				s.pop_back();
-			}
-
-			tmp = items.size();
-			items.resize(tmp + d.size());
-			memcpy(items.data() + tmp, d.data(), d.size());
-
+			size_t tmp = items.size();
+			items.resize(tmp + f.bytes.size());
+			memcpy(items.data() + tmp, f.bytes.data(), f.bytes.size());
 		}
 	}
+
+	if (dataFields.size() <= 1)
+		return items;
 
 	vector<uint8_t> prefix;
 	if (items.size() < 56) {

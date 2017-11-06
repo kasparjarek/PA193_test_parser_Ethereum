@@ -6,6 +6,13 @@
 #include <vector>
 
 
+struct RLPField
+{
+	std::vector<std::uint8_t> bytes;
+	bool isSerialized;
+};
+
+
 class RLP
 {
 	const std::vector<std::uint8_t> & _contents;
@@ -39,7 +46,7 @@ public:
 	std::size_t prefixOffset() const { return _prefixOff; }
 
 	static std::vector<std::uint8_t> serialize(
-		const std::vector<std::vector<std::uint8_t> > & data);
+		const std::vector<RLPField> & dataFields);
 
 private:
 	void parseDataLength(std::size_t dataLengthSize);

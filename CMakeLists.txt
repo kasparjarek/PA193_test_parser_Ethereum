@@ -61,7 +61,7 @@ set(SRCS
 set(TEST_SRCS
 	${SRCS}
 	${CMAKE_SOURCE_DIR}/test/main.cpp
-	${CMAKE_SOURCE_DIR}/test/block.cpp
+	${CMAKE_SOURCE_DIR}/test/parser.cpp
 	${CMAKE_SOURCE_DIR}/test/rlp.cpp
 )
 
