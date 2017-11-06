@@ -14,19 +14,18 @@ class EthereumParser
 	std::vector<RLP> _layout;
 	 
 public:
-	EthereumParser(const std::string & filename);
 
-	void parseFile() const;
+	void parseFile(const std::string & filename);
 
-	std::vector<std::uint8_t> & rawData() const { return _data; }
+	const std::vector<std::uint8_t> & rawData() const { return _data; }
 
-	std::vector<Block> & blocks() const { return _blocks; }
+	const std::vector<Block> & blocks() const { return _blocks; }
 
-	std::vector<RLP> & layout() const { return _layout; }
+	const std::vector<RLP> & layout() const { return _layout; }
 
 private:
 
-	Block parseBlock(std::size_t & offset) const;
+	void parseBlock(std::size_t & offset);
 
 	Header fillHeader(const RLP & rlp) const;
 

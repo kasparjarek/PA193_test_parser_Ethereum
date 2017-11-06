@@ -8,8 +8,13 @@
 
 using namespace std;
 
-EthereumParser::EthereumParser(const string & filename)
+ 
+void EthereumParser::parseFile(const string & filename)
 {
+	_blocks.clear();
+	_layout.clear();
+	_data.clear();
+
 	ifstream file(filename);
 	file.seekg(0, ios_base::end);
 	size_t fileSize = file.tellg();
@@ -17,18 +22,14 @@ EthereumParser::EthereumParser(const string & filename)
 	_data.resize(fileSize);
 	file.seekg(0, ios_base::beg);
 	file.read((char *) &(_data[0]), fileSize);
-}
 
- 
-void EthereumParser::parseFile() const
-{
 	size_t offset = 0;
 	while (offset < _data.size())
 		parseBlock(offset);
 }
 
 
-void EthereumParser::parseBlock(size_t & offset) const
+void EthereumParser::parseBlock(size_t & offset)
 {
 	RLP rlp{_data, offset, _data.size() - offset};
 	offset += rlp.totalLength();
