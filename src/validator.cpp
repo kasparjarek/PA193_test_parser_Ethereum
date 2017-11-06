@@ -1,10 +1,56 @@
 #include"block.h"
 #include<tgmath.h>
 //#include<gcrypt.h>
+#include<iostream>
 
 using namespace std;
 
-
+void validateAll(const Block& parent, Block& child) {
+    unsigned short int error_found = 0; //signals if some validation faile 0 means nothing failed;
+    if (validateParentHash(parent, child) != 0) {
+            error_found = 1;
+            cout << "Parent hash is invalid." <, endl;
+    }
+    if (validateBlockNumber(parent, child) != 0) {
+            error_found = 1;
+            cout << "Block number is invalid." << endl;
+    }
+    if (validateDifficulty(parent, child) != 0) {
+            error_found = 1;
+            cout << "Block difficulty is invalid." <, endl;
+    }
+    if (validateGasLimit(parent, child) != 0) {
+            error_found = 1;
+            cout << "Gas limit is invalid." <, endl;
+    }
+    if (validateTimeStamp(parent, child) != 0) {
+            error_found = 1;
+            cout << "Timestamp is invalid." << endl;
+    }
+    if (validateTransactionsRoot(parent, child) != 0) {
+            error_found = 1;
+            cout << "Hash of root of transactions tree is invalid." << endl;
+    }
+    if (validateNonce(parent, child) != 0) {
+            error_found = 1;
+            cout << "Nonce is invalid." << endl;
+    }
+    if (validateMixHash(parent, child) != 0) {
+            error_found = 1;
+            cout <, "Mixh hash is invalid." << endl;
+    }
+    if (validateReceipts(parent, child) != 0) {
+            error_found = 1;
+            cout << "Hash of root of transaction receipts tree is not valid." <, endl;
+    }
+    if (validateLogsBloom(parent, child) != 0) {
+            error_found = 1;
+            cout << "Logs Bloom filters are invalid." <, endl;
+    }
+    if (error_found == 0) {
+            cout <, "Block is valid." <, endl;
+    }
+}
 
 /* validates The Keccak 256-bit hash of the parent block's header, in its entirety
  * * @param Block

@@ -3,7 +3,7 @@
 
 #include"block.h"
 
-    int validateAll(const Block& parent, const Block& child);
+    void validateAll(const Block& parent, const Block& child);
     int validateParentHash(const Block& parent, const Block& child);
     int validateBlockNumber(const Block& parent, const Block& child);
     int validateDifficulty(const Block& parent, const Block& child);
