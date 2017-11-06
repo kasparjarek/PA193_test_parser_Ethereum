@@ -9,8 +9,8 @@ before_install:
 #  - sudo apt-get -qq update
   - sudo apt-get update
   - sudo apt-get install -y libboost-all-dev
-  - sudo apt-cache policy libcrypto++
-  - sudo apt-get install -y libcrypto++=5.6.4-8
+  - sudo apt-cache policy libcrypto++6
+  - sudo apt-get install -y libcrypto++6
 
 before_script:
   - mkdir build
