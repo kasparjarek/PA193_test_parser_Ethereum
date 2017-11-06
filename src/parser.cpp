@@ -20,18 +20,15 @@ EthereumParser::EthereumParser(const string & filename)
 }
 
  
-vector<Block> EthereumParser::parseFile() const
+void EthereumParser::parseFile() const
 {
-	vector<Block> out;
 	size_t offset = 0;
 	while (offset < _data.size())
-		out.push_back(parseBlock(offset));
-
-	return out;
+		parseBlock(offset);
 }
 
 
-Block EthereumParser::parseBlock(size_t & offset) const
+void EthereumParser::parseBlock(size_t & offset) const
 {
 	RLP rlp{_data, offset, _data.size() - offset};
 	offset += rlp.totalLength();
@@ -47,7 +44,8 @@ Block EthereumParser::parseBlock(size_t & offset) const
 	for (unsigned i = 0; i < rlp[Block::OMMERS].numItems(); ++i)
 		ommers.push_back(fillHeader(rlp[Block::OMMERS][i]));
 
-	return Block{header, transactions, ommers};
+	_blocks.push_back(Block{header, transactions, ommers});
+	_layout.push_back(rlp);
 }
 
 
