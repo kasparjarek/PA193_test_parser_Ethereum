@@ -5,11 +5,11 @@ compiler:
   - gcc
 
 before_install:
+  - sudo add-apt-repository universe
   - sudo apt-get -qq update
   - sudo apt-get install -y libboost-all-dev
-  - sudo add-apt-repository universe
-  - sudo apt-cache policy libcrypto++-dev
-  - sudo apt-get install -y libcrypto++-dev=5.6.4-8
+  - sudo apt-cache policy libcrypto++
+  - sudo apt-get install -y libcrypto++=5.6.4-8
 
 before_script:
   - mkdir build
