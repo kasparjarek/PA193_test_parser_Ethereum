@@ -12,7 +12,6 @@ using namespace std;
 void EthereumParser::parseFile(const string & filename)
 {
 	_blocks.clear();
-	_layout.clear();
 	_data.clear();
 
 	ifstream file(filename);
@@ -45,8 +44,7 @@ void EthereumParser::parseBlock(size_t & offset)
 	for (unsigned i = 0; i < rlp[Block::OMMERS].numItems(); ++i)
 		ommers.push_back(fillHeader(rlp[Block::OMMERS][i]));
 
-	_blocks.push_back(Block{header, transactions, ommers});
-	_layout.push_back(rlp);
+	_blocks.push_back(Block{header, transactions, ommers, rlp});
 }
 
 

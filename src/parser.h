@@ -11,7 +11,6 @@ class EthereumParser
 {
 	std::vector<std::uint8_t> _data;
 	std::vector<Block> _blocks;
-	std::vector<RLP> _layout;
 	 
 public:
 
@@ -20,8 +19,6 @@ public:
 	const std::vector<std::uint8_t> & rawData() const { return _data; }
 
 	const std::vector<Block> & blocks() const { return _blocks; }
-
-	const std::vector<RLP> & layout() const { return _layout; }
 
 private:
 

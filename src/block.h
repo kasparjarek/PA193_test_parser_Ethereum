@@ -124,10 +124,13 @@ class Block
 	std::vector<Transaction> _transactions;
 	std::vector<Header> _ommers;
 
+	RLP _layout;
+
 public:
 	Block(Header header, std::vector<Transaction> transactions,
-			std::vector<Header> ommers)
-		: _header{header}, _transactions{transactions}, _ommers{ommers}
+			std::vector<Header> ommers, RLP layout)
+		: _header{header}, _transactions{transactions}, _ommers{ommers},
+		_layout{layout}
 	{}
 
 	const Header & header() const
@@ -138,6 +141,9 @@ public:
 
 	const std::vector<Header> & ommers() const
 	{ return _ommers; }
+
+	const RLP & layout() const
+	{ return _layout; }
 };
 
 
