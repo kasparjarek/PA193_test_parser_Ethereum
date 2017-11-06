@@ -45,6 +45,8 @@ if (CMAKE_COMPILER_IS_GNUCC)
 	)
 endif (CMAKE_COMPILER_IS_GNUCC)
 
+# link cryptopp
+set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -lcryptopp" )
 
 include_directories(${CMAKE_SOURCE_DIR}/src/)
 
@@ -53,6 +55,7 @@ set(SRCS
 	${CMAKE_SOURCE_DIR}/src/block.cpp
 	${CMAKE_SOURCE_DIR}/src/rlp.cpp
 	${CMAKE_SOURCE_DIR}/src/validator.cpp
+	${CMAKE_SOURCE_DIR}/src/keccak.cpp
 )
 
 set(TEST_SRCS

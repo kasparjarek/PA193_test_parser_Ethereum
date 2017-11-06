@@ -3,15 +3,15 @@
 
 #include"block.h"
 
-    int validateAll(const Block b1, const Block b2);
-    int validateParentHash(const Block b1, const Block b2);
-    int validateBlockNumber(const Block b1, const Block b2);
-    int validateDifficulty(const Block b1, const Block b2);
-    int validateGaslimit(const Block b1, const Block b2);
-    int validateTimestamp(const Block b1, const Block b2);
-    int validateTransactionsRoot(const Block b1, const Block b2);
-    int validateNonce(const Block b1, const Block b2); //not implemented
-    int validateMixHash(const Block b1, const Block b2); //not implemented
+    void validateAll(const Block& parent, const Block& child);
+    int validateParentHash(const Block& parent, const Block& child);
+    int validateBlockNumber(const Block& parent, const Block& child);
+    int validateDifficulty(const Block& parent, const Block& child);
+    int validateGaslimit(const Block& parent, const Block& child);
+    int validateTimestamp(const Block& parent, const Block& child);
+    int validateTransactionsRoot(const Block& parent, const Block& child);
+    int validateNonce(const Block& parent, const Block& child); //not implemented
+    int validateMixHash(const Block& parent, const Block& child); //not implemented
     int validateReceipts(Const Block b1, const Block b2); //not implemented
-    int validateLogsBloom(const Block b1, const Block b2); //not implemented
+    int validateLogsBloom(const Block& parent, const Block& child); //not implemented
 
