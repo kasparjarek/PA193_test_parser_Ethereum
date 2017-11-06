@@ -41,21 +41,21 @@ int main()
 	vector<uint8_t> d6{127};
 
 	cout << "a" << endl;
-	vector<uint8_t> serialized = RLP::serialize(vector<vector<uint8_t> > {d1, d2, d3, d4, d5, d6});
+	//vector<uint8_t> serialized = RLP::serialize(vector<vector<uint8_t> > {d1, d2, d3, d4, d5, d6});
 	cout << "b" << endl;
-	for (auto x : serialized) {
-		printf("%d ", x);
-	}
+	//for (auto x : serialized) {
+	//	printf("%d ", x);
+	//}
 	printf("\n");
 
-	RLP r{serialized};
-	printf("num_items: %d\n", r.numItems());
-	for (unsigned i = 0; i < r.numItems(); ++i) {
-		for (unsigned j = 0; j < r[i].dataLength(); ++j) {
-			printf("%d ", serialized[r[i].dataOffset() + j]);
-		}
-		printf("\n");
-	}
+	//RLP r{serialized};
+	//printf("num_items: %d\n", r.numItems());
+	//for (unsigned i = 0; i < r.numItems(); ++i) {
+		//for (unsigned j = 0; j < r[i].dataLength(); ++j) {
+			//printf("%d ", serialized[r[i].dataOffset() + j]);
+		//}
+		//printf("\n");
+	//}
 }
 
 
