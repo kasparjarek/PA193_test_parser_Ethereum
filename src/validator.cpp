@@ -7,7 +7,7 @@
 
 using namespace std;
 
-void validateAll(const Block& parent, Block& child) {
+void validateAll(const Block& parent, const Block& child) {
     unsigned short int error_found = 0; //signals if some validation faile 0 means nothing failed;
     if (validateParentHash(parent, child) != 0) {
             error_found = 1;

@@ -2,10 +2,11 @@
 
 #include <iostream>
 #include <vector>
+#include"validator.h"
 
 using namespace std;
 
-int main()
+int main(int argc, char **argv)
 {
 /*	vector<Block> v = EthereumParser{"../test/samples/1000000"}.parseFile();
 
@@ -33,7 +34,7 @@ int main()
 	cout << dec << b.ommers().size() << endl;
 	return 0;
 	*/
-	vector<uint8_t> d1{4,5,6,23,56,4,5,4,3,6,7,23,6,9};
+	/*vector<uint8_t> d1{4,5,6,23,56,4,5,4,3,6,7,23,6,9};
 	vector<uint8_t> d2{4,5,23,6,9};
 	vector<uint8_t> d3{};
 	vector<uint8_t> d4{4,5,6,23,56,4,5,4,3,6,7,23,6,9,5,6,23,56,4,5,4,3,6,7,23,6,9,5,6,23,56,4,5,4,3,6,7,23,6,9,5,6,23,56,4,5,4,3,6,7,23,6,9,5,6,23,56,4,5,4,3,6,7,23,6,9,5,6,23,56,4,5,4,3,6,7,23,6,9,5,6,23,56,4,5,4,3,6,7,23,6,9,5,6,23,56,4,5,4,3,6,7,23,6,9,5,6,23,56,4,5,4,3,6,7,23,6,9,5,6,23,56,4,5,4,3,6,7,23,6,9};
@@ -56,6 +57,15 @@ int main()
 		//}
 		//printf("\n");
 	//}
+	 * */
+    EthereumParser parentblockparser;
+    parentblockparser.parseFile(argv[1]);
+    vector<Block> parentblock = parentblockparser.blocks();
+    EthereumParser childblockparser;
+    childblockparser.parseFile(argv[2]);
+    vector<Block> childblock = childblockparser.blocks();
+    validateAll(parentblock[0], childblock[0]);
+    return 0;
 }
 
 
