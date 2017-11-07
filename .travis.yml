@@ -1,3 +1,8 @@
+sudo: required
+
+services:
+  - docker
+
 language: cpp
 
 compiler:
@@ -5,12 +10,18 @@ compiler:
   - gcc
 
 before_install:
-  - sudo add-apt-repository universe
+  - docker pull ubuntu:16.04
+  - docker run -i -t ubuntu:16.04 add-apt-repository universe
+  - docker run -i -t ubuntu:16.04 apt-get -qq update
+  - docker run -i -t ubuntu:16.04 apt-get install -y libboost-all-dev
+  - docker run -i -t ubuntu:16.04 apt-cache policy libcrypto++
+  - docker run -i -t ubuntu:16.04 apt-get install -y libcrypto++-dev
+
+#  - sudo add-apt-repository universe
 #  - sudo apt-get -qq update
-  - sudo apt-get update
-  - sudo apt-get install -y libboost-all-dev
-  - sudo apt-cache policy libcrypto++6
-  - sudo apt-get install -y libcrypto++6
+#  - sudo apt-get install -y libboost-all-dev
+#  - sudo apt-cache policy libcrypto++
+#  - sudo apt-get install -y libcrypto++-dev
 
 before_script:
   - mkdir build
