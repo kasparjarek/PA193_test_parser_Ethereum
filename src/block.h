@@ -75,7 +75,7 @@ public:
 class Transaction
 {
 	enum order {
-		NONCE, GAS_PRICE, GAS_LIMIT, TO, VALUE, V, R, S, INIT,
+		NONCE, GAS_PRICE, GAS_LIMIT, TO, VALUE, INIT, V, R, S,
 		DATA = INIT
 	};
 	friend class EthereumParser;

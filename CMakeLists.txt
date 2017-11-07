@@ -53,6 +53,7 @@ set(SRCS
 	${CMAKE_SOURCE_DIR}/src/rlp.cpp
 	${CMAKE_SOURCE_DIR}/src/validator.cpp
 	${CMAKE_SOURCE_DIR}/src/keccak.cpp
+	${CMAKE_SOURCE_DIR}/src/trie.cpp
 )
 
 set(TEST_SRCS
@@ -70,4 +71,3 @@ target_link_libraries(ethereum_parser cryptopp)
 add_executable(test_parser ${TEST_SRCS} ${SRCS})
 target_link_libraries(test_parser gtest) 
 target_link_libraries(test_parser cryptopp)
-
