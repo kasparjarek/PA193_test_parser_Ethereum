@@ -165,16 +165,3 @@ int validateLogsBloom(const Block& parent, const Block& child) {
     return 0;
 }
 
-vector<uint8_t> numberToVector(size_t input) {
-    vector<uint8_t> result;
-    vector<uint8_t> tmp; //will be filled with bytes and later reversed into result vector
-    while (input > 0) {
-            tmp.push_back(input % 256);
-            input /= 256;
-    }
-    while (!tmp.empty()) {
-            result.push_back(tmp.back());
-            tmp.pop_back();
-    }
-    return result;
-}

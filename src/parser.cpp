@@ -96,14 +96,13 @@ Transaction EthereumParser::fillTransaction(const RLP & rlp) const
 	fill(transaction._gasLimit, rlp[Transaction::GAS_LIMIT]);
 	fill(transaction._to, rlp[Transaction::TO]);
 	fill(transaction._value, rlp[Transaction::VALUE]);
+	if (transaction.to().empty())
+		fill(transaction._init, rlp[Transaction::INIT]);
+	else
+		fill(transaction._data, rlp[Transaction::DATA]);
 	fill(transaction._v, rlp[Transaction::V]);
 	fill(transaction._r, rlp[Transaction::R]);
 	fill(transaction._s, rlp[Transaction::S]);
-	if (transaction.to().size() == 0)
-		fill(transaction._init, rlp[Transaction::INIT]);
-	else
-		fill(transaction._data, rlp[Transaction::INIT]);
-
 	return transaction;
 }
 

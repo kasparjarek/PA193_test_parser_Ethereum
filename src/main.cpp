@@ -58,13 +58,13 @@ int main(int argc, char **argv)
 		//printf("\n");
 	//}
 	 * */
-    EthereumParser parentblockparser;
-    parentblockparser.parseFile(argv[1]);
-    vector<Block> parentblock = parentblockparser.blocks();
-    EthereumParser childblockparser;
-    childblockparser.parseFile(argv[2]);
-    vector<Block> childblock = childblockparser.blocks();
-    validateAll(parentblock[0], childblock[0]);
+    EthereumParser parser;
+    parser.parseFile(argv[1]);
+    Block parentblock = parser.blocks()[0];
+    parser.parseFile(argv[2]);
+    Block childblock = parser.blocks()[0];
+    validateAll(parentblock, childblock);
+
     return 0;
 }
 

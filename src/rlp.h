@@ -64,4 +64,7 @@ public:
 	}
 };
 
+
+std::vector<std::uint8_t> numberToVector(size_t input);
+
 #endif
