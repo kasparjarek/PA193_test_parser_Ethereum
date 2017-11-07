@@ -1,7 +1,7 @@
-sudo: required
+#sudo: required
 
-services:
-  - docker
+#services:
+#  - docker
 
 language: cpp
 
@@ -10,11 +10,21 @@ compiler:
   - gcc
 
 before_install:
-  - docker pull ubuntu:16.04
-  - docker run -i -t ubuntu:16.04 /usr/bin/apt update
-  - docker run -i -t ubuntu:16.04 /usr/bin/apt install -y libboost-all-dev
-#  - docker run -i -t ubuntu:16.04 apt-cache policy libcrypto++
-  - docker run -i -t ubuntu:16.04 /usr/bin/apt install -y libcrypto++-dev
+#  - docker pull ubuntu:16.04
+#  - docker run -i -t ubuntu:16.04 /usr/bin/apt update
+#  - docker run -i -t ubuntu:16.04 /usr/bin/apt install software-properties-common
+#  - docker run -i -t ubuntu:16.04 /usr/bin/add-apt-repository main
+#  - docker run -i -t ubuntu:16.04 /usr/bin/add-apt-repository universe
+#  - docker run -i -t ubuntu:16.04 /usr/bin/apt update
+#  - docker run -i -t ubuntu:16.04 /usr/bin/apt-cache policy libcrypto++
+#  - docker run -i -t ubuntu:16.04 /usr/bin/apt install -y libcrypto++-dev
+  - mkdir cryptopp
+  - cd cryptopp
+  - wget https://cryptopp.com/cryptopp565.zip
+  - unzip -a cryptopp565.zip
+  - make
+  - sudo make install
+  - cd ..
 
 #  - sudo add-apt-repository universe
 #  - sudo apt-get -qq update
