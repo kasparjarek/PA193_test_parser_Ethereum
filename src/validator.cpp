@@ -64,23 +64,7 @@ int validateParentHash(const Block& parent, const Block& child) {
      * then serializing them through RLP.serialize and calculating their hash
     */
     Header header = parent.header();
-    RLPField parenthash = {header.parentHash(), false};
-    RLPField ommershash = {header.ommersHash(), false};
-    RLPField beneficiary = {header.beneficiary(), false};
-    RLPField stateroot = {header.stateRoot(), false};
-    RLPField transactionsroot = {header.transactionsRoot(), false};
-    RLPField receiptsroot = {header.receiptsRoot(), false};
-    RLPField logsbloom = {header.logsBloom(), false};
-    RLPField difficulty = {numberToVector(header.difficulty()), false};
-    RLPField number = {numberToVector(header.number()), false};
-    RLPField gaslimit = {numberToVector(header.gasLimit()), false};
-    RLPField gasused = {numberToVector(header.gasUsed()), false};
-    RLPField timestamp = {numberToVector(header.timestamp()), false};
-    RLPField extradata = {header.extraData(), false};
-    RLPField mixhash = {header.mixHash(), false};
-    RLPField nonce = {header.nonce(), false};
-    vector<RLPField> fields = {parenthash, ommershash, beneficiary, stateroot, transactionsroot, receiptsroot, logsbloom, difficulty, number, gaslimit, gasused, timestamp, extradata, mixhash, nonce};
-    vector<uint8_t> headerbytes = RLP::serialize(fields);
+    vector<uint8_t> headerbytes = header.toRLP();
     vector<uint8_t> parentheaderhash = keccak(headerbytes);
     vector<uint8_t> childhash = child.header().parentHash();
     if (parentheaderhash == childhash) {
@@ -101,7 +85,6 @@ int validateBlockNumber(const Block& parent, const Block& child) {
 }
 
 //difficulty formula taken from https://ethereum.stackexchange.com/questions/1880/how-is-the-mining-difficulty-calculated-on-ethereum
-//doplnit že se bere maximum ze vzorce a 131072
 int validateDifficulty(const Block& parent, const Block& child) {
     size_t block_diff = fmax(parent.header().difficulty() + parent.header().difficulty() / 2048 * fmax(1 - (child.header().timestamp() - parent.header().timestamp()) / 10, -99) + pow(2, ((child.header().number() / 100000) - 2)), 131072);
     if (block_diff == child.header().difficulty()) {
