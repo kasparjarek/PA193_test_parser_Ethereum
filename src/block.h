@@ -102,13 +102,13 @@ public:
 	{ return _gasLimit; }
 	const std::vector<std::uint8_t> & to() const
 	{ return _to; }
-	std::vector<std::uint8_t> value() const
+	const std::vector<std::uint8_t> & value() const
 	{ return _value; }
-	std::vector<std::uint8_t> v() const
+	const std::vector<std::uint8_t> & v() const
 	{ return _v; }
-	std::vector<std::uint8_t> r() const
+	const std::vector<std::uint8_t> & r() const
 	{ return _r; }
-	std::vector<std::uint8_t> s() const
+	const std::vector<std::uint8_t> & s() const
 	{ return _s; }
 	const std::vector<std::uint8_t> & init() const
 	{ return _init; }

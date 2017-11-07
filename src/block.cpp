@@ -46,3 +46,4 @@ vector<uint8_t> Transaction::toRLP() const
 
 	return RLP::serialize(fields);
 }
+
