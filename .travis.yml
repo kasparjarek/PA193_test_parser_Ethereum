@@ -19,7 +19,7 @@ before_install:
 #  - docker run -i -t ubuntu:16.04 /usr/bin/apt-cache policy libcrypto++
 #  - docker run -i -t ubuntu:16.04 /usr/bin/apt install -y libcrypto++-dev
   - mkdir cryptopp
-  - cd crypropp
+  - cd cryptopp
   - wget https://cryptopp.com/cryptopp565.zip
   - unzip -a cryptopp565.zip
   - make
