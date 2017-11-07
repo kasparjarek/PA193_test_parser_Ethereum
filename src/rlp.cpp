@@ -122,16 +122,23 @@ vector<uint8_t> RLP::serialize(const vector<RLPField> & dataFields)
 
 		} else {
 
-			size_t tmp = items.size();
-			items.resize(tmp + f.bytes.size());
-			memcpy(items.data() + tmp, f.bytes.data(), f.bytes.size());
+			if (f.bytes.size() == 0) {
+				items.push_back(192u);
+
+			} else {
+				size_t tmp = items.size();
+				items.resize(tmp + f.bytes.size());
+				memcpy(items.data() + tmp, f.bytes.data(), f.bytes.size());
+
+			}
 		}
 	}
 
-	//if (dataFields.size() <= 1)
-		//return items;
+	if (dataFields.size() == 0 || (dataFields.size() == 1 && !dataFields[0].isSerialized))
+		return items;
 
 	vector<uint8_t> prefix;
+
 	if (items.size() < 56) {
 		prefix.push_back(192u + items.size());
 	} else {

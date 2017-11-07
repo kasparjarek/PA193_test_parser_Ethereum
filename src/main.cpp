@@ -65,6 +65,11 @@ int main(int argc, char **argv)
     Block childblock = parser.blocks()[0];
     validateAll(parentblock, childblock);
 
+    vector<uint8_t> b = parentblock.toRLP();
+    for (auto x : b)
+	    cout << hex << int(x) << " ";
+    cout <<endl;
+
     return 0;
 }
 
