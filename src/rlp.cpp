@@ -128,8 +128,8 @@ vector<uint8_t> RLP::serialize(const vector<RLPField> & dataFields)
 		}
 	}
 
-	if (dataFields.size() <= 1)
-		return items;
+	//if (dataFields.size() <= 1)
+		//return items;
 
 	vector<uint8_t> prefix;
 	if (items.size() < 56) {

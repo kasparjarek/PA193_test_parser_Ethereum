@@ -47,3 +47,22 @@ vector<uint8_t> Transaction::toRLP() const
 	return RLP::serialize(fields);
 }
 
+
+vector<uint8_t> Block::toRLP() const
+{
+	vector<RLPField> RLPTransactions;
+	for (auto t : _transactions)
+		RLPTransactions.push_back({t.toRLP(), true});
+
+	vector<RLPField> RLPOmmers;
+	for (auto o : _ommers)
+		RLPOmmers.push_back({o.toRLP(), true});
+
+	vector<RLPField> fields {
+		{ _header.toRLP(), true },
+		{ RLP::serialize(RLPTransactions), true },
+		{ RLP::serialize(RLPOmmers), true },
+	};
+
+	return RLP::serialize(fields);
+}

@@ -147,6 +147,8 @@ public:
 
 	const RLP & layout() const
 	{ return _layout; }
+
+	std::vector<std::uint8_t> toRLP() const;
 };
 
 
