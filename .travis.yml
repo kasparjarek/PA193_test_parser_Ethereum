@@ -11,12 +11,17 @@ compiler:
 
 before_install:
   - docker pull ubuntu:16.04
-  - docker build .
-  - sudo add-apt-repository universe
-  - sudo apt-get -qq update
-  - sudo apt-get install -y libboost-all-dev
-  - sudo apt-cache policy libcrypto++
-  - sudo apt-get install -y libcrypto++-dev
+  - docker run -i -t add-apt-repository universe
+  - docker run -i -t apt-get -qq update
+  - docker run -i -t apt-get install -y libboost-all-dev
+  - docker run -i -t apt-cache policy libcrypto++
+  - docker run -i -t apt-get install -y libcrypto++-dev
+
+#  - sudo add-apt-repository universe
+#  - sudo apt-get -qq update
+#  - sudo apt-get install -y libboost-all-dev
+#  - sudo apt-cache policy libcrypto++
+#  - sudo apt-get install -y libcrypto++-dev
 
 before_script:
   - mkdir build
