@@ -4,6 +4,7 @@
 #include <vector>
 #include"validator.h"
 #include<stdexcept>
+#include"rlp.h"
 
 using namespace std;
 
@@ -17,6 +18,10 @@ int main(int argc, char **argv)
     try {
             parser.parseFile(argv[1]);
     }
+    catch (BadRLPFormat &e) {
+            cout << "The parent block has invalid format." << endl;
+            return 2;
+    }
     catch (runtime_error &e) {
             cout << "The file with parent block could not be read." << endl;
             return 2;
@@ -24,6 +29,10 @@ int main(int argc, char **argv)
     Block parentblock = parser.blocks()[0];
     try {
             parser.parseFile(argv[2]);
+    }
+    catch (BadRLPFormat &e) {
+            cout << "Child block has invalid format." << endl;
+            return 3;
     }
     catch (runtime_error &e) {
             cout << "The file with child block could not be read." << endl;

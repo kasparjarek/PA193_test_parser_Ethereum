@@ -32,10 +32,9 @@ public:
 
 	std::size_t dataLength() const { return _dataLen; }
 
-	const RLP & operator[](unsigned int index) const
-	{ return _items[index]; }
+	const RLP & operator[](unsigned int index) const;
 
-	const RLP & at(unsigned int index) const { return _items.at(index); }
+	const RLP & at(unsigned int index) const;
 
 //	std::size_t size() const { return _items.size(); }
 

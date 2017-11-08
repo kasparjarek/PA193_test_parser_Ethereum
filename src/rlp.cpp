@@ -2,6 +2,7 @@
 
 #include <cstring>
 #include <cstdint>
+#include<stdexcept>
 
 using namespace std;
 
@@ -178,4 +179,22 @@ vector<uint8_t> numberToVector(size_t input) {
             tmp.pop_back();
     }
     return result;
+}
+
+const RLP & RLP::operator[](unsigned int index) const {
+    if (index < _items.size()) {
+            return _items[index];
+    }
+    else {
+            throw BadRLPFormat();
+    }
+}
+
+const RLP & RLP::at(unsigned int index) const {
+    if (index < _items.size()) {
+            return _items.at(index);
+    }
+    else {
+            throw BadRLPFormat();
+    }
 }
