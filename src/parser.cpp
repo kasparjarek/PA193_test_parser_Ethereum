@@ -44,8 +44,21 @@ void EthereumParser::parseBlock(size_t & offset)
 	if (rlp[Block::HEADER].numItems() != 15) {
 	        throw BadBlockFormat();
 	}
+	//checks every transaction for right number of items
+	for (unsigned int i = 0; i < rlp[Block::TRANSACTIONS].numItems(); ++i) {
+	        if (rlp[Block::TRANSACTIONS][i].numItems() != 9) {
+	                throw BadBlockFormat();
+	        }
+	}
+	// check number of ommers (max 2)
 	if (rlp[Block::OMMERS].numItems() > 2) {
 	        throw BadBlockFormat();
+	}
+	//check also format of ommer headers
+	for (unsigned int i = 0; i < rlp[Block::OMMERS].numItems(); ++i) {
+	        if (rlp[Block::OMMERS][i].numItems() != 15) {
+	                throw BadBlockFormat();
+	        }
 	}
 
 	Header header = fillHeader(rlp[Block::HEADER]);
