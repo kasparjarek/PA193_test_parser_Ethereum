@@ -45,6 +45,8 @@ if (CMAKE_COMPILER_IS_GNUCC)
 	)
 endif (CMAKE_COMPILER_IS_GNUCC)
 
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
+
 include_directories(${CMAKE_SOURCE_DIR}/src/)
 
 set(SRCS
