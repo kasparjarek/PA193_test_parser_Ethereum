@@ -260,19 +260,10 @@ int validateOmmersRoot(const Block& block) {
  * @return - 0 if OK, else 1
  */
 int validateTransactionsGas(const Block &block) {
-    size_t computedgas = 0;
-    for (unsigned int i = 0; i < block.transactions().size(); ++i) {
-            computedgas += block.transactions()[i].gasPrice();
-            cout << block.transactions()[i].gasPrice() << endl;
-    }
-    cout << computedgas << endl;
-    cout << block.header().gasUsed() << endl;
-    if (computedgas == block.header().gasUsed()) {
-            return 0;
-    }
-    else {
-            return 1;
-    }
+    /*This method is not implemented because we would need to implement or use EVM (Ethereum virtual machine). We think that this is strongly out of scope of this project. */
+    /* Needs transaction receipts for which the Ethereum Virtual Machine is needed
+     */
+    return 0;
 }
 
 /* Verifies receiptRoot in the block header
