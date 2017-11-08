@@ -9,189 +9,158 @@
 #include "keccak.h"
 #include "rlp.h"
 
-
+/**
+ * Implementation of Modified Merkle Patricia Trie (yellowpaper Apendix D.)
+ */
 namespace trie {
 
-void print_bytes(const std::vector<uint8_t> &bytes);
-
-typedef uint8_t nibble; // Using just fisr 4 bits of byte
-typedef uint8_t byte;
-typedef uint32_t trie_key; // Trie key is 256 bits long.
-
-/**
- * Convert array of bytes into array of nibble using big-endian.
- * Upper 4 bits of each byte are returned as even nibbles (starting with 0).
- * Lower 4 bits are returned as odd nibbles.
- * @param bytes
- * @return
- */
-std::vector<nibble> bytes_to_nibbles(const std::vector<byte> &bytes);
-
-/**
- * Hex-prefix encoding from yellow paper Appendix C. (page 17)
- * @param nibbles sequence of nibbles
- * @param t node type flag (Leaf node = True, Extension node = False)
- * @return
- */
-std::vector<byte> hp(const std::vector<nibble> &nibbles, bool t);
-
-
-/**
- * Return size of common prefix of both vectors
- * @tparam T arbitrary vector type
- * @param a
- * @param b
- * @return
- */
-template<typename T>
-size_t common_prefix_len(const std::vector<T> &a, const std::vector<T> &b) {
-    size_t len = std::min(a.size(), b.size());
-    auto its = std::mismatch(a.cbegin(), a.cbegin()+len, b.cbegin());
-    return its.first - a.cbegin();
-}
-
-class Node {
-public:
-    /**
-     * Method returns binary representation of node
-     * as it should be stored in database.
-     * @return
-     */
-    virtual std::vector<byte> structure_composition()= 0;
+    typedef uint8_t nibble; // Using just first 4 bits of byte
+    typedef uint8_t byte;
 
     /**
-     * Method returns hash (key) of the node under which the node
-     * should be stored in database.
-     * @return
+     * Print byte array to std::cout (used just for debugging purpose)
+     * @param bytes
      */
-    RLPField node_composition() {
-        auto c = this->structure_composition();
-        if (c.size() < 32) {
-            return RLPField {c, true};
-        }
-        return RLPField {keccak(c), false};
-    }
+    void print_bytes(const std::vector<uint8_t> &bytes);
 
     /**
-     * Add new value or update value in node or his subtree.
-     * This probably cause creating new nodes and maybe replacing this node with different one,
-     * so the method returns node, that should replace current one in the tree structure.
-     * @param key_end
-     * @param value
+     * Convert array of bytes into array of nibble using big-endian.
+     * Upper 4 bits of each byte are returned as even nibbles (starting with 0).
+     * Lower 4 bits are returned as odd nibbles.
+     * @param bytes
+     * @return nibbles
      */
-    virtual Node* update(const std::vector<nibble> &key_end, const std::vector<byte> &value)= 0;
+    std::vector<nibble> bytes_to_nibbles(const std::vector<byte> &bytes);
 
-    virtual void print()=0;
-};
-
-
-class LeafNode: public Node {
-
-    std::vector<nibble> key_end;
-    std::vector<byte> value;
-
-public:
-    LeafNode(const std::vector<nibble> &key_end, const std::vector<byte> &value);
-    std::vector<byte> structure_composition() override ;
-    Node *update(const std::vector<nibble> &key_end, const std::vector<byte> &value) override;
-
-    void print() override {
-        printf("Leaf(");
-        print_bytes(key_end);
-        printf(", ");
-        print_bytes(value);
-        printf(")");
-    }
-};
+    /**
+     * Hex-prefix encoding from yellow paper Appendix C. (page 17)
+     * @param nibbles sequence of nibbles
+     * @param t node type (Leaf node = True, Extension node = False)
+     * @return bytes
+     */
+    std::vector<byte> hp(const std::vector<nibble> &nibbles, bool t);
 
 
-class BranchNode: public Node {
+    /**
+     * Return size of common prefix of given vectors
+     * @tparam T arbitrary vector type
+     * @param a vector
+     * @param b vector
+     * @return number of same items from the beginning of vectors
+     */
+    template<typename T>
+    size_t common_prefix_len(const std::vector<T> &a, const std::vector<T> &b);
 
-    std::unique_ptr<Node> posterity[16]; // have to contain more than one entry
-    std::vector<byte> value;
+    class Node {
+    public:
+        /**
+         * Method returns binary representation of node as described
+         * in yellowpaper Apendix D (structural composition function c).
+         * @return
+         */
+        virtual std::vector<byte> structure_composition()= 0;
 
-public:
-    std::vector<byte> structure_composition() override;
-    BranchNode * update(const std::vector<nibble> &key_end, const std::vector<byte> &value) override;
-
-    void attach_node(const nibble &key, std::unique_ptr<Node> node) {
-        if (posterity[key]) {
-            throw std::runtime_error("BranchNode::attach_node : requested position (key value) to attach node is "
-                                             "already filled.");
+        /**
+         * Method returns hash (key) of the node as described
+         * in yellowpaper Apendix D (node composition function n).
+         * @return Node composition in RLPField with added information, if the byte array is hash or
+         * structure composition itself (if it is serialized or not).
+         */
+        RLPField node_composition() {
+            auto c = this->structure_composition();
+            return (c.size() < 32) ? RLPField {c, true} : RLPField {keccak(c), false};
         }
-        posterity[key] = std::move(node);
-    }
 
-    void print() override {
-        printf("Branch(");
-        for (const auto &child: posterity) {
-            if (child) { child->print(); }
-            printf(", ");
-        }
-        print_bytes(value);
-        printf(")");
-    }
-};
+        /**
+         * Add new entry or update value in node and his subtree.
+         * This will in some cases create new node and replace this node with the new one,
+         * so the method returns node pointer, that should replace current one in the tree structure.
+         * Caller of this function is responsible for deleting the returned object.
+         * Note that returned pointer can be pointer to 'this' node.
+         * @param key_end
+         * @param value
+         */
+        virtual Node* update(const std::vector<nibble> &key_end, const std::vector<byte> &value)= 0;
 
-
-class ExtensionNode: public Node {
-
-    std::vector<nibble> shared_key; // have to be greater than one
-    std::unique_ptr<BranchNode> next;
-
-public:
-    ExtensionNode(const std::vector<nibble> &shared_key, BranchNode *next);
-
-    ExtensionNode(const std::vector<nibble> &shared_key, std::unique_ptr<BranchNode> next);
-
-    std::vector<byte> structure_composition() override;
-
-    Node *update(const std::vector<nibble> &key_end, const std::vector<byte> &value) override;
-
-    void print() override {
-        printf("Extension(");
-        print_bytes(shared_key);
-        printf(", ");
-        next->print();
-        printf(")");
-    }
-};
+        /**
+         * Useful for debugging. This function print to std::cout structure of this node and his subtree.
+         */
+        virtual void print()=0;
+    };
 
 
-class Trie {
+    class LeafNode: public Node {
 
-    std::unique_ptr<Node> root;
+        std::vector<nibble> key_end;
+        std::vector<byte> value;
 
-public:
+    public:
+        LeafNode(const std::vector<nibble> &key_end, const std::vector<byte> &value);
+        std::vector<byte> structure_composition() override;
+        Node *update(const std::vector<nibble> &key_end, const std::vector<byte> &value) override;
+        void print() override;
+    };
 
-    std::vector<byte> hash() {
-        if (!root) {
-            throw std::runtime_error("Empty trie: hash isn't defined.");
-        }
-        return keccak(root->structure_composition());
-    }
 
-    void update(const std::vector<byte> &key, const std::vector<byte> &value) {
-        auto key_nibble = bytes_to_nibbles(key);
+    class BranchNode: public Node {
 
-        if (root) {
-            Node *new_root = root->update(key_nibble, value);
-            if (new_root != root.get()) {
-                root.reset(new_root);
-            }
-        }
-        else {
-            root.reset(new LeafNode(key_nibble, value));
-        }
-    }
+        std::unique_ptr<Node> posterity[16];
+        std::vector<byte> value;
 
-    void print() {
-        printf("TRIE: ");
-        root->print();
-        printf("\n");
-    }
+    public:
+        std::vector<byte> structure_composition() override;
+        BranchNode * update(const std::vector<nibble> &key_end, const std::vector<byte> &value) override;
+        void print() override;
 
-};
+        /**
+         * Attach given node pointer into given position in branch.
+         * If the position is already used, std::runtime_error will be thrown.
+         * @param key
+         * @param node
+         */
+        void attach_node(const nibble &key, std::unique_ptr<Node> node);
+    };
+
+
+    class ExtensionNode: public Node {
+
+        std::vector<nibble> shared_key;
+        std::unique_ptr<BranchNode> next;
+
+    public:
+        ExtensionNode(const std::vector<nibble> &shared_key, BranchNode *next);
+        ExtensionNode(const std::vector<nibble> &shared_key, std::unique_ptr<BranchNode> next);
+        std::vector<byte> structure_composition() override;
+        Node *update(const std::vector<nibble> &key_end, const std::vector<byte> &value) override;
+        void print() override;
+    };
+
+
+    class Trie {
+
+        std::unique_ptr<Node> root;
+
+    public:
+
+        /**
+         * Calculate root trie hash
+         * @return
+         */
+        std::vector<byte> hash();
+
+        /**
+         * Add new entry or update value in the Trie.
+         * @param key
+         * @param value
+         */
+        void update(const std::vector<byte> &key, const std::vector<byte> &value);
+
+        /**
+         * Useful for debugging. This function print to std::cout structure of this Trie.
+         */
+        void print();
+
+    };
 
 }  // namespace trie
 
