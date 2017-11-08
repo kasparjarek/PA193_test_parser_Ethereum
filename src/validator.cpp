@@ -263,6 +263,7 @@ int validateTransactionsGas(const Block &block) {
     /*This method is not implemented because we would need to implement or use EVM (Ethereum virtual machine). We think that this is strongly out of scope of this project. */
     /* Needs transaction receipts for which the Ethereum Virtual Machine is needed
      */
+    Block b = block;
     return 0;
 }
 
