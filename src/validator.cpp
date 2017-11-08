@@ -57,6 +57,10 @@ void validateAll(const Block& parent, const Block& child) {
             error_found = 1;
             cout << "The ommers hash of block is invalid." << endl;
     }
+    if (validateTransactionsGas(child) != 0) {
+            error_found = 1;
+            cout << "Amount of gas used in transactions is not equal to amount of gas in block header." << endl;
+    }
     if (validateReceipts(child) != 0) {
             error_found = 1;
             cout << "Hash of root of transaction receipts tree is not valid." << endl;
@@ -243,6 +247,26 @@ int validateOmmersRoot(const Block& block) {
     vector<uint8_t> serializedommers = RLP::serialize(rlpommers);
     vector<uint8_t> computedhash = keccak(serializedommers);
     if (computedhash == block.header().ommersHash()) {
+            return 0;
+    }
+    else {
+            return 1;
+    }
+}
+
+/* verifies if sum of gas used in transaction is equal to number of gas used in header
+ * @param Block - input block
+ * @return - 0 if OK, else 1
+ */
+int validateTransactionsGas(const Block &block) {
+    int computedgas = 0;
+    for (unsigned int i = 0; i < block.transactions().size(); ++i) {
+            computedgas += block.transactions()[i].gasPrice();
+            cout << block.transactions()[i].gasPrice() << endl;
+    }
+    cout << computedgas << endl;
+    cout << block.header().gasUsed() << endl;
+    if (computedgas == block.header().gasUsed()) {
             return 0;
     }
     else {
