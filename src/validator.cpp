@@ -41,7 +41,7 @@ void validateAll(const Block& parent, const Block& child) {
             error_found = 1;
             cout << "Hash of root of transactions tree is invalid." << endl;
     }
-    if (validateNonce(parent, child) != 0) {
+    if (validateNonce(child) != 0) {
             error_found = 1;
             cout << "Nonce is invalid." << endl;
     }
@@ -49,15 +49,15 @@ void validateAll(const Block& parent, const Block& child) {
 	    error_found = 1;
 	    cout << "Extra data field is too large." << endl;
     }
-    if (validateMixHash(parent, child) != 0) {
+    if (validateMixHash(child) != 0) {
             error_found = 1;
             cout << "Mixh hash is invalid." << endl;
     }
-    if (validateReceipts(parent, child) != 0) {
+    if (validateReceipts(child) != 0) {
             error_found = 1;
             cout << "Hash of root of transaction receipts tree is not valid." << endl;
     }
-    if (validateLogsBloom(parent, child) != 0) {
+    if (validateLogsBloom(child) != 0) {
             error_found = 1;
             cout << "Logs Bloom filters are invalid." << endl;
     }
@@ -175,7 +175,7 @@ int validateTransactionsRoot(const Block& block) {
 /* Verifies the nonce of the block header
  * see Yellow paper 4.3.4 Block Header Validity and 11.4 State & Nonce Validation
  */
-int validateNonce(const Block& parent, const Block& child) {
+int validateNonce(const Block& block) {
     /*This method is not implemented because proper verification of nonce requires download whole state database. We think that downloading of whole state database and parsing it is a bit over the main goal of this project.*/
     /*
      * (n <= (^256 / child.header()difficulty()) && m = child.header().mixHash()
@@ -185,8 +185,7 @@ int validateNonce(const Block& parent, const Block& child) {
      * each block by scanning through the block headers up until that point, to
      * generate a large dataset
      */
-    Block tmp1 = parent;
-    Block tmp2 = child;
+    Block b = block;
     return 0;
 }
 
@@ -234,6 +233,7 @@ int validateStateRoot(const Block& block) {
  */
 int validateOmmersRoot(const Block& block) {
 
+    Block b = block;
     return 0;
 }
 
@@ -248,8 +248,7 @@ int validateReceipts(const Block& block) {
      * transaction code on Ethereum Virtual Machine as well as having the state
      * tree from before the execution
      */
-    Block tmp1 = parent;
-    Block tmp2 = child;
+    Block b = block;
     return 0;
 }
 
