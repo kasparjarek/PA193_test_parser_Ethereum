@@ -4,7 +4,7 @@
 #include <vector>
 #include"validator.h"
 #include<stdexcept>
-#include"rlp.h"
+
 
 using namespace std;
 
@@ -18,7 +18,7 @@ int main(int argc, char **argv)
     try {
             parser.parseFile(argv[1]);
     }
-    catch (BadRLPFormat &e) {
+    catch (BadBlockFormat &e) {
             cout << "The parent block has invalid format." << endl;
             return 2;
     }
@@ -30,7 +30,7 @@ int main(int argc, char **argv)
     try {
             parser.parseFile(argv[2]);
     }
-    catch (BadRLPFormat &e) {
+    catch (BadBlockFormat &e) {
             cout << "Child block has invalid format." << endl;
             return 3;
     }

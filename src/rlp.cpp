@@ -180,21 +180,3 @@ vector<uint8_t> numberToVector(size_t input) {
     }
     return result;
 }
-
-const RLP & RLP::operator[](unsigned int index) const {
-    if (index < _items.size()) {
-            return _items[index];
-    }
-    else {
-            throw BadRLPFormat();
-    }
-}
-
-const RLP & RLP::at(unsigned int index) const {
-    if (index < _items.size()) {
-            return _items.at(index);
-    }
-    else {
-            throw BadRLPFormat();
-    }
-}

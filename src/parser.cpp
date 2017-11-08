@@ -36,6 +36,17 @@ void EthereumParser::parseBlock(size_t & offset)
 {
 	RLP rlp{_data, offset, _data.size() - offset};
 	offset += rlp.totalLength();
+	//check if there is header, transactions, ommers list
+	if (rlp.numItems() != 3) {
+	        throw BadBlockFormat();
+	}
+	//check number of elements in header
+	if (rlp[Block::HEADER].numItems() != 15) {
+	        throw BadBlockFormat();
+	}
+	if (rlp[Block::OMMERS].numItems() > 2) {
+	        throw BadBlockFormat();
+	}
 
 	Header header = fillHeader(rlp[Block::HEADER]);
 
