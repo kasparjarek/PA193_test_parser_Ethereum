@@ -23,7 +23,7 @@ class RLP
 	std::vector<RLP> _items;
 
 public:
-	RLP(const std::vector<std::uint8_t> & contents);
+	explicit RLP(const std::vector<std::uint8_t> & contents);
 
 	RLP(const std::vector<std::uint8_t> & contents, std::size_t offset, 
 	    std::size_t maxLength);
