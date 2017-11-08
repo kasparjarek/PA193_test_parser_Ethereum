@@ -5,12 +5,11 @@ namespace trie {
 
     void print_bytes(const std::vector<uint8_t> &bytes) {
         for (const auto &byte: bytes) {
-            std::cout << std::setfill('0') << std::setw(2) << std::hex << (unsigned int) byte << " ";
+            std::cout << std::setfill('0') << std::setw(2) << std::hex << (unsigned int) byte;
         }
     }
 
     std::vector<nibble> bytes_to_nibbles(const std::vector<byte> &bytes) {
-
         std::vector<nibble> nibbles;
         nibbles.reserve(bytes.size() * 2);
 
@@ -18,7 +17,6 @@ namespace trie {
             nibbles.push_back(byte >> 4);  // upper 4 bits as even nibble
             nibbles.push_back( byte & (uint8_t) 0x0f);  // lower 4 bits as odd nibble
         }
-
         return nibbles;
     }
 
@@ -42,6 +40,13 @@ namespace trie {
         }
 
         return bytes;
+    }
+
+    template<typename T>
+    size_t common_prefix_len(const std::vector<T> &a, const std::vector<T> &b) {
+        size_t len = std::min(a.size(), b.size());
+        auto diff = std::mismatch(a.cbegin(), a.cbegin()+len, b.cbegin());
+        return diff.first - a.cbegin();
     }
 
 //    Leaf Node
@@ -83,6 +88,14 @@ namespace trie {
         return ext_node;
     }
 
+    void LeafNode::print() {
+        printf("Leaf(");
+        print_bytes(key_end);
+        printf(", ");
+        print_bytes(value);
+        printf(")");
+    }
+
 //    Branch Node
 
     std::vector<byte> BranchNode::structure_composition() {
@@ -118,6 +131,24 @@ namespace trie {
         }
 
         return this;
+    }
+
+    void BranchNode::print() {
+        printf("Branch(");
+        for (const auto &child: posterity) {
+            if (child) { child->print(); }
+            printf(", ");
+        }
+        print_bytes(value);
+        printf(")");
+    }
+
+    void BranchNode::attach_node(const nibble &key, std::unique_ptr<Node> node) {
+        if (posterity[key]) {
+            throw std::runtime_error("BranchNode::attach_node : "
+                                     "requested position (key) to attach node is already filled.");
+        }
+        posterity[key] = std::move(node);
     }
 
 //    Extension Node
@@ -175,6 +206,43 @@ namespace trie {
         }
 
         return new_branch.release();
+    }
+
+    void ExtensionNode::print() {
+        printf("Extension(");
+        print_bytes(shared_key);
+        printf(", ");
+        next->print();
+        printf(")");
+    }
+
+//    Trie
+
+    std::vector<byte> Trie::hash() {
+        if (!root) {
+            throw std::runtime_error("Empty trie: hash isn't defined.");
+        }
+        return keccak(root->structure_composition());
+    }
+
+    void Trie::update(const std::vector<byte> &key, const std::vector<byte> &value) {
+        auto key_nibble = bytes_to_nibbles(key);
+
+        if (root) {
+            Node *new_root = root->update(key_nibble, value);
+            if (new_root != root.get()) {
+                root.reset(new_root);
+            }
+        }
+        else {
+            root.reset(new LeafNode(key_nibble, value));
+        }
+    }
+
+    void Trie::print() {
+        printf("TRIE: ");
+        root->print();
+        printf("\n");
     }
 
 
