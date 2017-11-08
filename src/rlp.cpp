@@ -135,7 +135,7 @@ vector<uint8_t> RLP::serialize(const vector<RLPField> & dataFields)
 		}
 	}
 
-	if (dataFields.size() == 0 || (dataFields.size() == 1 && !dataFields[0].isSerialized))
+	if (dataFields.size() == 1 && !dataFields[0].isSerialized)
 		return items;
 
 	vector<uint8_t> prefix;
