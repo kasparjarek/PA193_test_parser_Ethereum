@@ -22,6 +22,10 @@ int main(int argc, char **argv)
             cout << "The parent block has invalid format." << endl;
             return 2;
     }
+    catch (BadRLPFormat) {
+            cout << "The parent block has bad RLP serialization." << endl;
+            return 2;
+    }
     catch (runtime_error &e) {
             cout << "The file with parent block could not be read." << endl;
             return 2;
@@ -30,8 +34,12 @@ int main(int argc, char **argv)
     try {
             parser.parseFile(argv[2]);
     }
+    catch (BadRLPFormat) {
+            cout << "The child block has bad RLP serialization." << endl;
+            return 3;
+    }
     catch (BadBlockFormat &e) {
-            cout << "Child block has invalid format." << endl;
+            cout << "The child block has invalid format." << endl;
             return 3;
     }
     catch (runtime_error &e) {
