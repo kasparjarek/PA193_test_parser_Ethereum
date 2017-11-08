@@ -5,7 +5,6 @@ compiler:
   - gcc
 
 before_install:
-  - pwd
   - mkdir cryptopp
   - cd cryptopp
   - wget https://cryptopp.com/cryptopp565.zip
@@ -15,7 +14,6 @@ before_install:
   - cd ..
 
 before_script:
-  - pwd
   - mkdir build
   - cd build
   - cmake ..
