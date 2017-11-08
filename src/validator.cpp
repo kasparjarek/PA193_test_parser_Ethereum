@@ -89,6 +89,7 @@ int validateParentHash(const Block& parent, const Block& child) {
  * @return int - 0 if OK, else 1
  */
 int validateBlockNumber(const Block& parent, const Block& child) {
+    cout << "Parent number " << parent.header().number() << endl;
     if (parent.header().number() == (child.header().number() - 1)) {
             return 0;
     }
