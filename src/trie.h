@@ -86,6 +86,8 @@ namespace trie {
          * Useful for debugging. This function print to std::cout structure of this node and his subtree.
          */
         virtual void print()=0;
+
+        virtual ~Node()= default;
     };
 
 
