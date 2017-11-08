@@ -5,6 +5,7 @@
 #include <cstring>
 #include <fstream>
 #include <vector>
+#include<stdexcept>
 
 using namespace std;
 
@@ -15,6 +16,9 @@ void EthereumParser::parseFile(const string & filename)
 	_data.clear();
 
 	ifstream file(filename);
+	if (!file.good()) {
+	        throw runtime_error("File can not be opened.");
+	}
 	file.seekg(0, ios_base::end);
 	size_t fileSize = file.tellg();
 

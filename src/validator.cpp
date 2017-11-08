@@ -4,6 +4,8 @@
 #include<iostream>
 #include"keccak.h"
 #include"rlp.h"
+#include"trie.h"
+#include<iterator>
 
 using namespace std;
 
@@ -29,7 +31,7 @@ void validateAll(const Block& parent, const Block& child) {
             error_found = 1;
             cout << "Timestamp is invalid." << endl;
     }
-    if (validateTransactionsRoot(parent, child) != 0) {
+    if (validateTransactionsRoot(child) != 0) {
             error_found = 1;
             cout << "Hash of root of transactions tree is invalid." << endl;
     }
@@ -114,9 +116,21 @@ int validateTimeStamp(const Block& parent, const Block& child) {
 }
 
 //nothing for now, waiting for merkle trees
-int validateTransactionsRoot(const Block& parent, const Block& child) {
-    Block tmp1 = parent;
-    Block tmp2 = child;
+int validateTransactionsRoot(const Block& block) {
+    /*vector<Transaction> transactions = block.transactions();
+    trie::Trie t; //Merkle Patricia trie for transactions
+    vector<uint8_t> computedhash; //hash computed from reconstructed tree
+    for (vector<Transaction>::const_iterator i = transactions.begin(); i != transactions.end(); ++i) {
+            unsigned int position = distance(transactions.cbegin(), i); //position of transaction in the vector
+            t.update(numberToVector(position), i->toRLP());
+    }
+    computedhash = t.hash();
+    if (computedhash == block.header().transactionsRoot()) {
+            return 0;
+    }
+    else {
+            return 1;
+    }*/
     return 0;
 }
 

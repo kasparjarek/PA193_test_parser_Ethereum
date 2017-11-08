@@ -3,37 +3,12 @@
 #include <iostream>
 #include <vector>
 #include"validator.h"
+#include<stdexcept>
 
 using namespace std;
 
 int main(int argc, char **argv)
 {
-/*	vector<Block> v = EthereumParser{"../test/samples/1000000"}.parseFile();
-
-	Block b = v.front();
-
-	for (auto x : b.header().parentHash())
-		cout << hex << (unsigned int) x << " ";
-	cout << endl;
-	for (auto x : b.header().ommersHash())
-		cout << hex << (unsigned int) x << " ";
-	cout << endl;
-
-	for (auto x : b.header().receiptsRoot())
-		cout << hex << (unsigned int) x << " ";
-	cout << endl;
-
-	cout << dec << b.header().difficulty() << endl;
-
-	for (unsigned i = 0; i < b.transactions().size(); ++i) {
-		for (auto x : b.transactions()[i].to())
-			cout << hex << (unsigned) x << " ";
-		cout << endl;
-	}
-
-	cout << dec << b.ommers().size() << endl;
-	return 0;
-	*/
 	/*vector<uint8_t> d1{4,5,6,23,56,4,5,4,3,6,7,23,6,9};
 	vector<uint8_t> d2{4,5,23,6,9};
 	vector<uint8_t> d3{};
@@ -58,11 +33,27 @@ int main(int argc, char **argv)
 		//printf("\n");
 	//}
 	 * */
+    if (argc != 3) {
+            cout << "The program expects exactly 2 arguments." << endl << "Both arguments have to be valid file paths to Ethereum binary blocks." << endl;
+            return 1;
+    }
     EthereumParser parser;
-    parser.parseFile(argv[1]);
+    try {
+            parser.parseFile(argv[1]);
+    }
+    catch (runtime_error &e) {
+            cout << "The file with parent block could not be read." << endl;
+            return 2;
+    }
     Block parentblock = parser.blocks()[0];
-    parser.parseFile(argv[2]);
     Block childblock = parser.blocks()[0];
+    try {
+            parser.parseFile(argv[2]);
+    }
+    catch (runtime_error &e) {
+            cout << "The file with child block could not be read." << endl;
+            return 3;
+    }
     validateAll(parentblock, childblock);
 
     vector<uint8_t> b = parentblock.toRLP();

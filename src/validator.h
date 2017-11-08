@@ -9,7 +9,7 @@
     int validateDifficulty(const Block& parent, const Block& child);
     int validateGasLimit(const Block& parent, const Block& child);
     int validateTimeStamp(const Block& parent, const Block& child);
-    int validateTransactionsRoot(const Block& parent, const Block& child);
+    int validateTransactionsRoot(const Block& block);
     int validateNonce(const Block& parent, const Block& child); //not implemented
     int validateMixHash(const Block& parent, const Block& child); //not implemented
     int validateReceipts(const Block& parent, const Block& child); //not implemented
