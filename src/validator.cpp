@@ -9,6 +9,12 @@
 
 using namespace std;
 
+
+/** runs all validation checks, prints errors
+ * @param Block  - parent block
+ * @param Block - child block
+ * @return void
+ */
 void validateAll(const Block& parent, const Block& child) {
     unsigned short int error_found = 0; //signals if some validation faile 0 means nothing failed;
     if (validateParentHash(parent, child) != 0) {
@@ -56,10 +62,10 @@ void validateAll(const Block& parent, const Block& child) {
     }
 }
 
-/* validates The Keccak 256-bit hash of the parent block's header, in its entirety
- * * @param Block
- * @ param Block
- * @return int
+/* verifies if parent header hash of child block corresponds to hash of parent block header
+ * * @param Block - parent block
+ * @ param Block - child block
+ * @return int - 0 if OK, else 1
 */
 int validateParentHash(const Block& parent, const Block& child) {
     /*now getting parts of Block header, creating a vector of RLPfield
@@ -77,6 +83,11 @@ int validateParentHash(const Block& parent, const Block& child) {
     }
 }
 
+/*verifies if child block has right block number according to parent block, see Yellow paper - Block header validity
+ * @param Block - parent block
+ * @param Block - child block
+ * @return int - 0 if OK, else 1
+ */
 int validateBlockNumber(const Block& parent, const Block& child) {
     if (parent.header().number() == (child.header().number() - 1)) {
             return 0;
@@ -86,8 +97,13 @@ int validateBlockNumber(const Block& parent, const Block& child) {
     }
 }
 
-//difficulty formula taken from https://ethereum.stackexchange.com/questions/1880/how-is-the-mining-difficulty-calculated-on-ethereum
+/* Verifies if child block's difficulty is in correct range limited by parent block, see Yellow paper - Block header validity
+ * @param Block - parent block
+ * @param Block - child block
+ * @return int - 0 if OK, else 1
+ */
 int validateDifficulty(const Block& parent, const Block& child) {
+    //difficulty formula taken from https://ethereum.stackexchange.com/questions/1880/how-is-the-mining-difficulty-calculated-on-ethereum and from Yellow paper
     size_t block_diff = fmax(parent.header().difficulty() + parent.header().difficulty() / 2048 * fmax(1 - (child.header().timestamp() - parent.header().timestamp()) / 10, -99) + pow(2, ((child.header().number() / 100000) - 2)), 131072);
     if (block_diff == child.header().difficulty()) {
             return 0;
@@ -97,6 +113,11 @@ int validateDifficulty(const Block& parent, const Block& child) {
     }
 }
 
+/* validates if gas limit of child is in accordance with gas limit of parent, see Yellow paper - block header validity
+ * @param Block - parent
+ * @param Block - child
+ * @return int - 0 if OK, else 1
+ */
 int validateGasLimit(const Block& parent, const Block& child) {
     if ((child.header().gasLimit() < parent.header().gasLimit() + (parent.header().gasLimit() / 1024)) && (child.header().gasLimit() > parent.header().gasLimit() - (parent.header().gasLimit() / 1024))) {
             return 0;
@@ -106,6 +127,11 @@ int validateGasLimit(const Block& parent, const Block& child) {
     }
 }
 
+/* verifies if child's timestamp is greater then parent's timestamp
+ * @param Block - parent
+ * @param Block - child
+ * @return int - 0 if OK, else 1
+ */
 int validateTimeStamp(const Block& parent, const Block& child) {
     if (child.header().timestamp() > parent.header().timestamp()) {
             return 0;
@@ -115,7 +141,11 @@ int validateTimeStamp(const Block& parent, const Block& child) {
     }
 }
 
-//nothing for now, waiting for merkle trees
+
+/* verifies if transactions root hash stored in header corresponds to hash of root of transactions tree stored in block
+ * @param Block - block to check
+ * @return int - 0 if OK, else 1
+ */
 int validateTransactionsRoot(const Block& block) {
     /*vector<Transaction> transactions = block.transactions();
     trie::Trie t; //Merkle Patricia trie for transactions
