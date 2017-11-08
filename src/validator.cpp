@@ -1,10 +1,11 @@
 #include"block.h"
-#include<tgmath.h>
 #include"validator.h"
-#include<iostream>
 #include"keccak.h"
 #include"rlp.h"
 #include"trie.h"
+
+#include<iostream>
+#include<cmath>
 #include<iterator>
 
 using namespace std;
@@ -119,7 +120,7 @@ int validateBlockNumber(const Block& parent, const Block& child) {
  */
 int validateDifficulty(const Block& parent, const Block& child) {
     //difficulty formula taken from https://ethereum.stackexchange.com/questions/1880/how-is-the-mining-difficulty-calculated-on-ethereum and from Yellow paper
-    size_t block_diff = fmax(parent.header().difficulty() + parent.header().difficulty() / 2048 * fmax(1 - (child.header().timestamp() - parent.header().timestamp()) / 10, -99) + pow(2, ((child.header().number() / 100000) - 2)), 131072);
+    size_t block_diff = fmax(parent.header().difficulty() + floor(parent.header().difficulty() / 2048) * fmax(1 - floor((child.header().timestamp() - parent.header().timestamp()) / 10), -99) + floor(pow(2, floor(((child.header().number() / 100000)) - 2))), 131072);
     if (block_diff == child.header().difficulty()) {
             return 0;
     }
@@ -259,7 +260,7 @@ int validateOmmersRoot(const Block& block) {
  * @return - 0 if OK, else 1
  */
 int validateTransactionsGas(const Block &block) {
-    int computedgas = 0;
+    size_t computedgas = 0;
     for (unsigned int i = 0; i < block.transactions().size(); ++i) {
             computedgas += block.transactions()[i].gasPrice();
             cout << block.transactions()[i].gasPrice() << endl;
