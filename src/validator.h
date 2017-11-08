@@ -13,6 +13,7 @@
     int validateNonce(const Block& block); //not implemented
     int validateExtraData(const Block& block);
     int validateMixHash(const Block& block); //not implemented
+    int validateOmmersRoot(const Block &block);
     int validateReceipts(const Block& block); //not implemented
     int validateLogsBloom(const Block& block); //not implemented
 

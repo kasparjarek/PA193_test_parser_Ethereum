@@ -53,6 +53,10 @@ void validateAll(const Block& parent, const Block& child) {
             error_found = 1;
             cout << "Mixh hash is invalid." << endl;
     }
+    if (validateOmmersRoot(child) != 0) {
+            error_found = 1;
+            cout << "The ommers hash of block is invalid." << endl;
+    }
     if (validateReceipts(child) != 0) {
             error_found = 1;
             cout << "Hash of root of transaction receipts tree is not valid." << endl;
@@ -232,9 +236,18 @@ int validateStateRoot(const Block& block) {
  * @return int - 0 if OK, else 1
  */
 int validateOmmersRoot(const Block& block) {
-
-    Block b = block;
-    return 0;
+    vector<RLPField> rlpommers;
+    for (unsigned int i = 0; i < block.ommers().size(); ++i) {
+            rlpommers.push_back({block.ommers()[i].toRLP(), true});
+    }
+    vector<uint8_t> serializedommers = RLP::serialize(rlpommers);
+    vector<uint8_t> computedhash = keccak(serializedommers);
+    if (computedhash == block.header().ommersHash()) {
+            return 0;
+    }
+    else {
+            return 1;
+    }
 }
 
 /* Verifies receiptRoot in the block header
