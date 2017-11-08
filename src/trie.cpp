@@ -1,10 +1,11 @@
+#include <iomanip>
 #include "trie.h"
 
 namespace trie {
 
     void print_bytes(const std::vector<uint8_t> &bytes) {
         for (const auto &byte: bytes) {
-            std::cout << std::showbase << std::hex << (unsigned int) byte << " ";
+            std::cout << std::setfill('0') << std::setw(2) << std::hex << (unsigned int) byte << " ";
         }
     }
 

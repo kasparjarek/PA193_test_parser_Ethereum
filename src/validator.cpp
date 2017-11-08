@@ -147,21 +147,20 @@ int validateTimeStamp(const Block& parent, const Block& child) {
  * @return int - 0 if OK, else 1
  */
 int validateTransactionsRoot(const Block& block) {
-    /*vector<Transaction> transactions = block.transactions();
-    trie::Trie t; //Merkle Patricia trie for transactions
-    vector<uint8_t> computedhash; //hash computed from reconstructed tree
-    for (vector<Transaction>::const_iterator i = transactions.begin(); i != transactions.end(); ++i) {
-            unsigned int position = distance(transactions.cbegin(), i); //position of transaction in the vector
-            t.update(numberToVector(position), i->toRLP());
+    trie::Trie trie;
+
+    for (size_t i = 0; i < block.transactions().size(); ++i) {
+        vector<uint8_t> index = numberToVector(i);
+        index = RLP::serialize(vector<RLPField> {RLPField{index, false}});
+        trie.update(index, block.transactions().at(i).toRLP());
     }
-    computedhash = t.hash();
-    if (computedhash == block.header().transactionsRoot()) {
-            return 0;
+
+    if (trie.hash() == block.header().transactionsRoot()) {
+        return 0;
     }
     else {
-            return 1;
-    }*/
-    return 0;
+        return 1;
+    }
 }
 
 int validateNonce(const Block& parent, const Block& child) {
