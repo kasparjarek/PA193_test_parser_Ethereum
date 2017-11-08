@@ -45,6 +45,10 @@ void validateAll(const Block& parent, const Block& child) {
             error_found = 1;
             cout << "Nonce is invalid." << endl;
     }
+    if (validateExtraData(child) != 0) {
+	    error_found = 1;
+	    cout << "Extra data field is too large." << endl;
+    }
     if (validateMixHash(parent, child) != 0) {
             error_found = 1;
             cout << "Mixh hash is invalid." << endl;
@@ -63,6 +67,7 @@ void validateAll(const Block& parent, const Block& child) {
 }
 
 /* verifies if parent header hash of child block corresponds to hash of parent block header
+ * see Yellow paper 4.3.4 Block Header Validity
  * * @param Block - parent block
  * @ param Block - child block
  * @return int - 0 if OK, else 1
@@ -83,7 +88,8 @@ int validateParentHash(const Block& parent, const Block& child) {
     }
 }
 
-/*verifies if child block has right block number according to parent block, see Yellow paper - Block header validity
+/*verifies if child block has right block number according to parent block
+ * see Yellow paper 4.3.4 Block Header Validity
  * @param Block - parent block
  * @param Block - child block
  * @return int - 0 if OK, else 1
@@ -97,7 +103,8 @@ int validateBlockNumber(const Block& parent, const Block& child) {
     }
 }
 
-/* Verifies if child block's difficulty is in correct range limited by parent block, see Yellow paper - Block header validity
+/* Verifies if child block's difficulty is in correct range limited by parent block
+ * see Yellow paper 4.3.4 Block Header Validity
  * @param Block - parent block
  * @param Block - child block
  * @return int - 0 if OK, else 1
@@ -113,7 +120,8 @@ int validateDifficulty(const Block& parent, const Block& child) {
     }
 }
 
-/* validates if gas limit of child is in accordance with gas limit of parent, see Yellow paper - block header validity
+/* validates if gas limit of child is in accordance with gas limit of parent
+ * see Yellow paper 4.3.4 Block Header Validity
  * @param Block - parent
  * @param Block - child
  * @return int - 0 if OK, else 1
@@ -128,6 +136,7 @@ int validateGasLimit(const Block& parent, const Block& child) {
 }
 
 /* verifies if child's timestamp is greater then parent's timestamp
+ * see Yellow paper 4.3.4 Block Header Validity
  * @param Block - parent
  * @param Block - child
  * @return int - 0 if OK, else 1
@@ -163,31 +172,97 @@ int validateTransactionsRoot(const Block& block) {
     }
 }
 
+/* Verifies the nonce of the block header
+ * see Yellow paper 4.3.4 Block Header Validity and 11.4 State & Nonce Validation
+ */
 int validateNonce(const Block& parent, const Block& child) {
     /*This method is not implemented because proper verification of nonce requires download whole state database. We think that downloading of whole state database and parsing it is a bit over the main goal of this project.*/
+    /*
+     * (n <= (^256 / child.header()difficulty()) && m = child.header().mixHash()
+     * where (n, m) = proof_of_work(child.header_without_n(), child.header(), d)
+     * where d = the current DAG - large data set needed to compute the mix-hash
+     * and proof_of_work see 11.5 - Ethash algorithm - needs seed computed for
+     * each block by scanning through the block headers up until that point, to
+     * generate a large dataset
+     */
     Block tmp1 = parent;
     Block tmp2 = child;
     return 0;
 }
 
-int validateMixHash(const Block& parent, const Block& child) {
+/* Verifies the length of extraData field in the block header
+ * @param child - block to verify
+ * @return int - 0 if OK, else 1
+ */
+int validateExtraData(const Block& block) {
+    
+    return block.header().extraData().size() > 32;
+}
+
+/* Verifies the mixHash in the block header
+ * see Yellow paper 4.3.4 Block Header Validity and 11.4 State & Nonce Validation
+ * @param block - block to verify
+ * @return int - 0 if OK, else 1
+ */
+int validateMixHash(const Block& block) {
     /*This method is not implemented because proper verification of mixHash requires download whole state database. We think that downloading of whole state database and parsing it is a bit over the main goal of this project.*/
-    Block tmp1 = parent;
-    Block tmp2 = child;
+    /* The mixHash is outputted by the proof_of_work function, which takes as a
+     * parameter a large dataset generated using the whole state database, see 
+     * validateNonce()
+     */
+    Block b = block;
     return 0;
 }
 
-int validateReceipts(const Block& parent, const Block& child) {
+/* Verifies the stateRoot hash in the block header
+ * see Yellow paper 4.3.2 Holistic Validity
+ * @param block - block to verify
+ * @return int - 0 if OK, else 1
+ */
+int validateStateRoot(const Block& block) {
+    /* Not implemented because the whole state database is needed, as well as
+     * means of applying transactions to it - Ethereum Virtual machine
+     */
+    Block b = block;
+    return 0;
+}
+
+/* Verifies ommersHash in the block header
+ * see Yellow paper 4.3.2 Holistic Validity
+ * @param block - block to verify
+ * @return int - 0 if OK, else 1
+ */
+int validateOmmersRoot(const Block& block) {
+
+    return 0;
+}
+
+/* Verifies receiptRoot in the block header
+ * see Yellow paper 4.3.2 Holistic Validity
+ * @param block - block to verify
+ * @returm int - 0 if OK, else 1
+ */
+int validateReceipts(const Block& block) {
     /*This method is not implemented because proper verification of receipts trie requires download whole state database. We think that downloading of whole state database and parsing it is a bit over the main goal of this project.*/
+    /* Needs to create receipts for the transactions, which needs executing the
+     * transaction code on Ethereum Virtual Machine as well as having the state
+     * tree from before the execution
+     */
     Block tmp1 = parent;
     Block tmp2 = child;
     return 0;
 }
 
-int validateLogsBloom(const Block& parent, const Block& child) {
+/* Verifies logsBloom in the block header
+ * see Yellow paper 4.3.2 Holistic Validity
+ * @param block - block to verify
+ * @return int - 0 if OK, else 1
+ */
+int validateLogsBloom(const Block& block) {
     /*This method is not implemented because we would need to implement or use EVM (Ethereum virtual machine). We think that this is strongly out of scope of this project. */
-    Block tmp1 = parent;
-    Block tmp2 = child;
+    /* Needs transaction receipts for which the Ethereum Virtual Machine is needed
+     */
+    Block b = block;
     return 0;
 }
 
