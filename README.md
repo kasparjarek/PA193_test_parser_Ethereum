@@ -18,7 +18,7 @@ Merkle Patricia Trie
 * [Wiki](https://github.com/ethereum/wiki/wiki/Patricia-Tree)
 * [Blogpost - Understanding the ethereum trie](https://easythereentropy.wordpress.com/2014/06/04/understanding-the-ethereum-trie/)
 
-
+[How to get raw Ethereum blocks](https://github.com/ethereum/wiki/wiki/Blockchain-import-and-export-instructions)
 
 # Example: structure of block 1000000:
 
