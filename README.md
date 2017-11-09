@@ -18,25 +18,9 @@ Merkle Patricia Trie
 * [Wiki](https://github.com/ethereum/wiki/wiki/Patricia-Tree)
 * [Blogpost - Understanding the ethereum trie](https://easythereentropy.wordpress.com/2014/06/04/understanding-the-ethereum-trie/)
 
-# TODO
-
-4.3.4 Block Header Validity
-* parent block hash
-* block number
-* difficulty
-* gas limit
-* timestamp
-* (nonce a mixHash asi vynechame, je k nim potrebna cela databaza)
-
-4.3.2 Holistic Validity
-* merkle tree - do konce týdne commitnu (Jarek)
-* merkle tree pouzit na validaciu zoznamu transakcii (H_t)
-* (zoznam receiptov asi vynechame, potrebna databaza stavov)
-* (logsBloom asi vynechame, potrebny EVM)
 
 
-
-# Structure of block 1000000:
+# Example: structure of block 1000000:
 
 ```
 f9 | 02fd |			Node, size: 765

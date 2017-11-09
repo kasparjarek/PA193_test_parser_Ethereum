@@ -7,6 +7,10 @@
 #include <string>
 #include <vector>
 
+/**
+ * EthereumParser class
+ * provides parsing of ethereum blocks from raw files
+ */
 class EthereumParser
 {
 	std::vector<std::uint8_t> _data;
@@ -14,10 +18,22 @@ class EthereumParser
 	 
 public:
 
+	/**
+	 * Parse raw byte file containing ethereum blocks and store those blocks internally
+	 * @param filename path to the file
+	 */
 	void parseFile(const std::string & filename);
 
+	/**
+	 * Access the raw bytes of the latest parsed file
+	 * @return vector of bytes of the parsed file
+	 */
 	const std::vector<std::uint8_t> & rawData() const { return _data; }
 
+	/**
+	 * Return parsed blocks
+	 * @return vector of parsed blocks
+	 */
 	const std::vector<Block> & blocks() const { return _blocks; }
 
 private:
@@ -34,4 +50,4 @@ private:
 
 };
 
-#endif
+#endif // PARSER_H
