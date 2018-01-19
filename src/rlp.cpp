@@ -67,6 +67,10 @@ void RLP::parseDataLength(size_t dataLengthSize)
 	for (size_t i = 0; i < dataLengthSize; ++i) {
 		_dataLen *= 256;
 		_dataLen += _contents[_prefixOff + 1 + i];
+
+        if (_dataLen > _contents.size() - _prefixOff + dataLengthSize + 1) {
+            throw runtime_error("DataLen too big");
+        }
 	}
 }
 
